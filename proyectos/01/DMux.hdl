@@ -14,5 +14,8 @@ CHIP DMux {
     OUT a, b;
 
     PARTS:
-    
+    Not(in = sel, out = NotSelA);
+    Not(in = NotSelA, out = NotSelB);
+    And(a = NotSelB, b = in , out = b);
+    And(a = NotSelA, b = in , out = a);
 }
