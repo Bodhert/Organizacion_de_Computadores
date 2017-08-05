@@ -43,21 +43,44 @@ CHIP ALU {
 
     PARTS:
         //zx
-        Mux16( a = x, b = false, sel = zx , out = outZx); 
+        Mux16( a = x, b = false, sel = zx , out = outX); 
         //zx
 
         //nx
-        Not16(in = x; out = notX);
-        Mux16(a = x, b = notX, sel = nx, out = outNx);
+        Not16(in = outX, out = notX);
+        Mux16(a = outX, b = notX, sel = nx, out = outX0);
         //nx
 
         //zy
-         Mux16( a = y, b = false, sel = zy , out = outZy); 
+         Mux16( a = y, b = false, sel = zy , out = outY); 
         //zy
 
         //ny
-        Not16(in = y; out = notY);
-        Mux16(a = y, b = notY, sel = ny, out = outNy);
+        Not16(in = outY, out = notY);
+        Mux16(a = outY, b = notY, sel = ny, out = outY0);
         //ny
 
+        //f
+        Add16(a = outX0, b = outY0, out = XplusY);
+        And16(a = outX0, b = outY0, out = XandY);
+        Mux16(a = XandY, b = XplusY , sel = f , out = out1 );
+        //f
+
+        //no - ng
+        Not16(in = out1, out = notOut1);
+        Mux16(a = out1 , b = notOut1  , sel = no , out = out , out[15] = ng,
+            out[0..7] = less, out[8..15] = most);
+        //no - ng
+
+        
+
+
+        //zr
+        Or8Way(in = less , out = or1);
+        Or8Way(in = most , out = or2);
+        Or(a = or1, b = or2, out = zrSel);
+        Mux(a = true, b = false , sel = zrSel , out = zr);
+        //zr
+
+        
 }
