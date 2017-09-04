@@ -39,11 +39,40 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
+
     Mux16(a = instruction, b = AluOut , sel = instruction[15], out = outMux0);
-    Register(in = outMux0, load = instruction[15], out = outAregister);
-    Mux16(a = outAregister, b = inM , sel = instruction[15], out = outMux1);
-    Alu(x = outRegisterD, y = outMux1, zx = instruction[10], nx = instruction[9]
-        zy = instruction[8], ny = instruction[7], f = instruction[6], 
-        no = instruction[5], out = AluOut, zr = , ng = AluOut[15]);
+
+    Not(in = instruction[15], out = selA);
+    And(a = instruction[15], b = instruction[5], out = loadA);
+    Or(a = selA, b = loadA, out = loadA1);
+    ARegister(in = outMux0, load = loadA1, out = outAregister, 
+            out[0..14] = addressM);
+
+    Mux16(a = outAregister, b = inM , sel = instruction[12], out = outMux1);
+
+    ALU(x = outDregister, y = outMux1, zx = instruction[11], nx = instruction[10],
+        zy = instruction[9], ny = instruction[8], f = instruction[7], 
+        no = instruction[6], out = AluOut , out = outM, zr = ZrOut , ng = NgOut);
+
+    And(a = instruction[3], b = instruction[15] , out = writeM);
+
+    And(a = instruction[15], b = instruction[4], out = loadD);
+    DRegister(in = AluOut, load = loadD, out = outDregister);
+
+    And(a = ZrOut, b = instruction[1], out = jeq);
+    And(a = NgOut, b = instruction[2], out = jlt);
+    Or(a = ZrOut, b = NgOut, out = NotZeroOrLess);
+    Not(in = NotZeroOrLess, out = positive);
+    And(a = positive, b = instruction[0], out = jgt);
+    Or(a = jeq, b = jlt, out = jle);
+    Or(a = jle, b = jgt, out = jumpA);
+    And(a = instruction[15], b = jumpA, out = loadPc );
+    Not(in = loadPc, out = inPc);
+
+    
+    PC(in = outAregister, load = loadPc , inc = inPc , reset = reset , out[0..14] = pc);
+
+
+
 
 }
