@@ -7,7 +7,7 @@ using namespace std;
 
 bool isAinstruction(string toParse)
 {
-    regex Ainstruction("(\\\s*@)[a-zA-Z_$][a-zA-Z_$0-9]*$");
+    regex Ainstruction("(\\\s*@)([a-zA-Z_$][a-zA-Z_$0-9\\.]*$|([[:digit:]]+))");
     return regex_match(toParse,Ainstruction);
 }
 
@@ -44,7 +44,7 @@ bool isEmptyLine(string toParse)
 
 bool isTag(string toParse)
 {
-    regex tag("\\\s*\\\(\\\s*[a-zA-Z_$][a-zA-Z_$0-9]*\\\s*\\\)\\\s*");
+    regex tag("\\\s*\\\(\\\s*[a-zA-Z_$][a-zA-Z_$0-9\\.]*\\\s*\\\)\\\s*");
     return regex_match(toParse,tag);
 }
 
@@ -79,6 +79,7 @@ void ReadAndParse(string file)
         else
         {
            cout << lineCounter << " Not an instrution" << endl;
+           break;
         }
 
         lineCounter++;
