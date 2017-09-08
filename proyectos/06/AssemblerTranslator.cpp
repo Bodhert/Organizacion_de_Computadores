@@ -7,7 +7,7 @@ using namespace std;
 
 bool isAinstruction(string toParse)
 {
-    regex Ainstruction("(\\\s*@)(([[:digit:]]+)|([[:alpha:]]+))\\\s*");
+    regex Ainstruction("(\\\s*@)[a-zA-Z_$][a-zA-Z_$0-9]*$");
     return regex_match(toParse,Ainstruction);
 }
 
@@ -20,8 +20,8 @@ bool isCinstruction(string toParse)
 
 bool isComment(string toParse)
 {
-    regex comment("\\");
-    return regex_match(toParse,comment);
+    regex simpleComment("\\\s*//\\\s*.*\\\s*");
+    return regex_match(toParse,simpleComment);
 }
 
 bool isEmptyLine(string toParse)
@@ -49,6 +49,10 @@ void ReadAndParse(string file)
         else if(isEmptyLine(input))
         {
             cout << lineCounter << " Empty Line " << endl;
+        }
+        else if(isComment(input))
+        {
+            cout << lineCounter << " commentary " << endl;
         }
         else
         {
