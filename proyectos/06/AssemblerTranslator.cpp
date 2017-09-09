@@ -2,8 +2,12 @@
 #include <regex>
 #include <string>
 #include <stdio.h>
+#include <cstddef>
 
 using namespace std;
+
+map<string,int> symbols;
+int variablesPos;
 
 bool isAinstruction(string toParse)
 {
@@ -20,20 +24,24 @@ bool isCinstruction(string toParse)
         || regex_match(toParse,Cinstruction2);
 }
 
-bool isComment(string toParse)
+bool isCommentWithInstuction(string toParse)
 {
-    regex simpleComment("\\\s*//\\\s*.*\\\s*");
     regex Acomment("(\\\s*@)[a-zA-Z_$][a-zA-Z_$0-9\\.]*\\\s*//\\\s*.*\\\s*");
     regex CinstructionComment("\\\s*(A|D|M|MD|AM|AD|AMD)\\\s*\\=\\\s*(A|D|M)\\\s*(\\+|-)\\\s*(A|D|M|1)\\\s*//\\\s*.*\\\s*");
     regex CinstructionComment1("\\\s*(A|D|M|MD|AM|AD|AMD)\\\s*\\=\\\s*(A|D|M|0|1|-1|!M|!D|!A)\\\s*//\\\s*.*\\\s*");
     regex CinstructionComment2("\\\s*(D|0)\\\s*;\\\s*(JGT|JEQ|JGE|JLT|JNE|JLE|JMP)\\\s*//\\\s*.*\\\s*");
     regex tagComment("\\\s*\\\(\\\s*[a-zA-Z_$][a-zA-Z_$0-9\\.]*\\\s*\\\)\\\s*//\\\s*.*\\\s*");
-    return regex_match(toParse,simpleComment)
-            || regex_match(toParse,Acomment)
+    return regex_match(toParse,Acomment)
             || regex_match(toParse, CinstructionComment)
             || regex_match(toParse,CinstructionComment1)
             || regex_match(toParse,CinstructionComment2)
             || regex_match(toParse,tagComment);
+}
+
+bool isLineComment(string toParse)
+{
+    regex simpleComment("\\\s*//\\\s*.*\\\s*");
+    return regex_match(toParse,simpleComment);
 }
 
 bool isEmptyLine(string toParse)
@@ -48,37 +56,96 @@ bool isTag(string toParse)
     return regex_match(toParse,tag);
 }
 
-void ReadAndParse(string file)
+string cleanTag(string TagToclean)
+{
+    string clean = "";
+    size_t firstBracket = TagToclean.find_first_of("(");
+    size_t lastBracket = TagToclean.find_last_of(")");
+
+    for(size_t i = firstBracket+1; i < lastBracket; ++i)
+    {
+        clean += TagToclean[i];
+    }
+
+    return clean;
+}
+
+void assignTags(string tag, int pos)
+{
+    symbols[tag] = pos;
+}
+
+void initialize()
+{
+    symbols.clear();
+    variablesPos = 16;
+
+    symbols["R0"] = 0;
+    symbols["R1"] = 1;
+    symbols["R2"] = 2;
+    symbols["R3"] = 3;
+    symbols["R4"] = 4;
+    symbols["R5"] = 5;
+    symbols["R6"] = 6;
+    symbols["R7"] = 7;
+    symbols["R8"] = 8;
+    symbols["R9"] = 9;
+    symbols["R10"] = 10;
+    symbols["R11"] = 11;
+    symbols["R12"] = 12;
+    symbols["R13"] = 13;
+    symbols["R14"] = 14;
+    symbols["R15"] = 15;
+    symbols["SCREEN"] = 16384;
+    symbols["KBD"] = 24576;
+    symbols["SP"] = 0;
+    symbols["LCL"] = 1;
+    symbols["ARG"] = 2;
+    symbols["THIS"] = 3;
+    symbols["THAT"] = 4;
+}
+
+void firstPass(string file)
 {
 	freopen(file.c_str(),"r",stdin);
 	string input;
 	int lineCounter = 1;
-
+	int asmLineCounter = 0;
 	while(getline(cin,input))
 	{
-	    if(isAinstruction(input))
+	    if(isTag(input))
         {
-           cout << lineCounter << " A instrution" << endl;
+            //cout << lineCounter << " tag " << endl;
+            string tag = cleanTag(input);
+            assignTags(tag,asmLineCounter);
+
+        }
+        else if(isAinstruction(input))
+        {
+            //cout << lineCounter << " A instrution" << endl;
+            asmLineCounter++;
         }
         else if(isCinstruction(input))
         {
-            cout << lineCounter << " C instrution" << endl;
+            //cout << lineCounter << " C instrution" << endl;
+            asmLineCounter++;
+        }
+        else if(isCommentWithInstuction(input))
+        {
+            //cout << lineCounter << " commentary whit insturction" << endl;
+            asmLineCounter++;
+        }
+        else if(isLineComment(input))
+        {
+            //cout << lineCounter << " line comment " << endl;
         }
         else if(isEmptyLine(input))
         {
-            cout << lineCounter << " Empty Line " << endl;
-        }
-        else if(isComment(input))
-        {
-            cout << lineCounter << " commentary " << endl;
-        }
-        else if(isTag(input))
-        {
-            cout << lineCounter << " tag " << endl;
+            //cout << lineCounter << " Empty Line " << endl;
         }
         else
         {
-           cout << lineCounter << " Not an instrution" << endl;
+           cout << "Syntax error: unrecognized expression at line: " << lineCounter << endl;
            break;
         }
 
@@ -91,7 +158,8 @@ void ReadAndParse(string file)
 
 int main(int argc, char* argv[])
 {
-    if(argv[1] != NULL) ReadAndParse(argv[1]);
+    initialize();
+    if(argv[1] != NULL) firstPass(argv[1]);
     else cout << "The execution should be: .exe nameOfyourfile.asm" << endl;
 
 	return 0;
