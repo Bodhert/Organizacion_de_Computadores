@@ -173,6 +173,30 @@ string encodeAinstruction(string aIns)
 
 }
 
+string cleanCinstructions(string bIns)
+{
+    string clean = "";
+    for(int i = 0; i < bIns.size();++i)
+    {
+        if(bIns[i] != ' ') clean += bIns[i];
+    }
+
+    return clean;
+
+}
+
+string cleanCinstructionsWithComments(string bIns)
+{
+    string clean = "";
+    size_t findComment = bIns.find_first_of("//");
+    for(size_t i = 0 ; i < findComment; ++i )
+    {
+        if(bIns[i]!=' ' ) clean += bIns[i];
+    }
+
+    return clean;
+}
+
 void initialize()
 {
     symbols.clear();
@@ -216,17 +240,46 @@ void secondPass(string file)
         if(isAinstruction(input))
         {
           string Ains = cleanAinstruction(input);
-          //cout << Ains << " " << Ains.size() << endl;
           string instruction = encodeAinstruction(Ains);
-          cout << Ains <<  " " << instruction << endl;
+          //cout << Ains <<  " " << instruction << endl;
         }
         else if(isCommentWithInstuctionA(input))
         {
             string Ains = cleanAinstructionWithComments(input);
-            //cout << Ains << " " << Ains.size() << endl;
             string instruction = encodeAinstruction(Ains);
-            cout << Ains << " " << instruction << endl;
+            //cout << Ains << " " << instruction << endl;
         }
+        else if(isCinstruction(input))
+        {
+            string Cins = cleanCinstructions(input);
+            cout << Cins << " " << Cins.size() << endl;
+        }
+        else if(isCommentWithInstuctionC(input))
+        {
+            string Cins = cleanCinstructionsWithComments(input);
+            cout << Cins << " " << Cins.size() << endl;
+        }
+        else if(isCinstruction1(input))
+        {
+            string Cins = cleanCinstructions(input);
+            cout << Cins << " " << Cins.size() << endl;
+        }
+        else if(isCommentWithInstuctionC1(input))
+        {
+            string Cins = cleanCinstructionsWithComments(input);
+            cout << Cins << " " << Cins.size() << endl;
+        }
+        else if(isCinstruction2(input))
+        {
+            string Cins = cleanCinstructions(input);
+            cout << Cins << " " << Cins.size() << endl;
+        }
+        else if(isCommentWithInstuctionC2(input))
+        {
+            string Cins = cleanCinstructionsWithComments(input);
+            cout << Cins << " " << Cins.size() << endl;
+        }
+
     }
 
      fileToRead.seekg(0,fileToRead.beg);
