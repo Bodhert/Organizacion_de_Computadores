@@ -4,11 +4,13 @@
 #include <stdio.h>
 #include <cstddef>
 #include <fstream>
+#include <bitset>
 
 using namespace std;
 
 map<string,int> symbols;
-int variablesPos;
+int variablePos;
+
 
 bool isAinstruction(string toParse)
 {
@@ -129,15 +131,52 @@ string cleanAinstruction(string toClean)
     return clean;
 }
 
-string encodeAinstruction()
+string cleanAinstructionWithComments(string toClean)
 {
+    string clean = "";
+    size_t findAt = toClean.find_first_of("@");
+    size_t findComment = toClean.find_first_of("//");
+
+    for(size_t i = findAt+1; i < findComment && toClean[i] != ' '; ++i)
+    {
+        clean += toClean[i];
+    }
+
+    return clean;
+
+}
+string encodeAinstruction(string aIns)
+{
+    int num = atoi(aIns.c_str());
+    if(!(num == 0 && aIns[0] != '0'))
+    {
+
+        int temp  = 0 ;
+        temp |= num;
+        string ans = bitset<16>(temp).to_string();
+        return ans;
+    }
+    else
+    {
+        if(!symbols.count(aIns))
+        {
+            symbols[aIns] = variablePos;
+            variablePos++;
+        }
+
+        num = symbols[aIns];
+        int temp  = 0 ;
+        temp |= num;
+        string ans = bitset<16>(temp).to_string();
+        return ans;
+    }
 
 }
 
 void initialize()
 {
     symbols.clear();
-    variablesPos = 16;
+    variablePos = 16;
 
     symbols["R0"] = 0;
     symbols["R1"] = 1;
@@ -170,12 +209,23 @@ void secondPass(string file)
 	string input;
     int lineCounter = 1;
 	int asmLineCounter = 0;
+
+
 	while(getline(fileToRead,input))
     {
         if(isAinstruction(input))
         {
           string Ains = cleanAinstruction(input);
-          cout << Ains << " " << Ains.size() << endl;
+          //cout << Ains << " " << Ains.size() << endl;
+          string instruction = encodeAinstruction(Ains);
+          cout << Ains <<  " " << instruction << endl;
+        }
+        else if(isCommentWithInstuctionA(input))
+        {
+            string Ains = cleanAinstructionWithComments(input);
+            //cout << Ains << " " << Ains.size() << endl;
+            string instruction = encodeAinstruction(Ains);
+            cout << Ains << " " << instruction << endl;
         }
     }
 
