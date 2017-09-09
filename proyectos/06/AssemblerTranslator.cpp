@@ -18,25 +18,51 @@ bool isAinstruction(string toParse)
 bool isCinstruction(string toParse)
 {
  regex Cinstruction("\\\s*(A|D|M|MD|AM|AD|AMD)\\\s*\\=\\\s*(A|D|M)\\\s*(\\+|-|&|\\|)\\\s*(A|D|M|1)\\\s*");
- regex Cinstruction1("\\\s*(A|D|M|MD|AM|AD|AMD)\\\s*\\=\\\s*(A|D|M|0|1|-1|!M|!D|!A)\\\s*");
- regex Cinstruction2("\\\s*(D|0)\\\s*;\\\s*(JGT|JEQ|JGE|JLT|JNE|JLE|JMP)\\\s*");
- return regex_match(toParse,Cinstruction) || regex_match(toParse,Cinstruction1)
-        || regex_match(toParse,Cinstruction2);
+ return regex_match(toParse,Cinstruction);
 }
 
-bool isCommentWithInstuction(string toParse)
+bool isCinstruction1(string toParse)
+{
+   regex Cinstruction1("\\\s*(A|D|M|MD|AM|AD|AMD)\\\s*\\=\\\s*(A|D|M|0|1|-1|!M|!D|!A)\\\s*");
+   return regex_match(toParse,Cinstruction1);
+}
+
+bool isCinstruction2(string toParse)
+{
+ regex Cinstruction2("\\\s*(D|0)\\\s*;\\\s*(JGT|JEQ|JGE|JLT|JNE|JLE|JMP)\\\s*");
+ return regex_match(toParse,Cinstruction2);
+}
+
+bool isCommentWithInstuctionA(string toParse)
 {
     regex Acomment("(\\\s*@)[a-zA-Z_$][a-zA-Z_$0-9\\.]*\\\s*//\\\s*.*\\\s*");
-    regex CinstructionComment("\\\s*(A|D|M|MD|AM|AD|AMD)\\\s*\\=\\\s*(A|D|M)\\\s*(\\+|-)\\\s*(A|D|M|1)\\\s*//\\\s*.*\\\s*");
-    regex CinstructionComment1("\\\s*(A|D|M|MD|AM|AD|AMD)\\\s*\\=\\\s*(A|D|M|0|1|-1|!M|!D|!A)\\\s*//\\\s*.*\\\s*");
-    regex CinstructionComment2("\\\s*(D|0)\\\s*;\\\s*(JGT|JEQ|JGE|JLT|JNE|JLE|JMP)\\\s*//\\\s*.*\\\s*");
-    regex tagComment("\\\s*\\\(\\\s*[a-zA-Z_$][a-zA-Z_$0-9\\.]*\\\s*\\\)\\\s*//\\\s*.*\\\s*");
-    return regex_match(toParse,Acomment)
-            || regex_match(toParse, CinstructionComment)
-            || regex_match(toParse,CinstructionComment1)
-            || regex_match(toParse,CinstructionComment2)
-            || regex_match(toParse,tagComment);
+    return regex_match(toParse,Acomment);
 }
+
+bool isCommentWithInstuctionC(string toParse)
+{
+    regex CinstructionComment("\\\s*(A|D|M|MD|AM|AD|AMD)\\\s*\\=\\\s*(A|D|M)\\\s*(\\+|-)\\\s*(A|D|M|1)\\\s*//\\\s*.*\\\s*");
+    return regex_match(toParse, CinstructionComment);
+}
+
+bool isCommentWithInstuctionC1(string toParse)
+{
+    regex CinstructionComment1("\\\s*(A|D|M|MD|AM|AD|AMD)\\\s*\\=\\\s*(A|D|M|0|1|-1|!M|!D|!A)\\\s*//\\\s*.*\\\s*");
+    return regex_match(toParse,CinstructionComment1);
+}
+
+bool isCommentWithInstuctionC2(string toParse)
+{
+    regex CinstructionComment2("\\\s*(D|0)\\\s*;\\\s*(JGT|JEQ|JGE|JLT|JNE|JLE|JMP)\\\s*//\\\s*.*\\\s*");
+    return regex_match(toParse,CinstructionComment2);
+}
+
+bool isCommentTag(string toParse)
+{
+    regex tagComment("\\\s*\\\(\\\s*[a-zA-Z_$][a-zA-Z_$0-9\\.]*\\\s*\\\)\\\s*//\\\s*.*\\\s*");
+    return regex_match(toParse,tagComment);
+}
+
 
 bool isLineComment(string toParse)
 {
@@ -58,6 +84,7 @@ bool isTag(string toParse)
 
 string cleanTag(string TagToclean)
 {
+
     string clean = "";
     size_t firstBracket = TagToclean.find_first_of("(");
     size_t lastBracket = TagToclean.find_last_of(")");
@@ -70,6 +97,20 @@ string cleanTag(string TagToclean)
     return clean;
 }
 
+string cleanTagWithComments(string TagToclean)
+{
+    string clean = "";
+    size_t firstBracket = TagToclean.find_first_of("(");
+    size_t findComment = TagToclean.find_first_of("//");
+
+    for(size_t i = firstBracket+1; i < findComment && TagToclean[i] != ')'; ++i)
+    {
+        clean += TagToclean[i];
+    }
+
+    return clean;
+
+}
 void assignTags(string tag, int pos)
 {
     symbols[tag] = pos;
@@ -118,19 +159,26 @@ void firstPass(string file)
             //cout << lineCounter << " tag " << endl;
             string tag = cleanTag(input);
             assignTags(tag,asmLineCounter);
-
+        }
+        else if(isCommentTag(input))
+        {
+            string tag = cleanTagWithComments(input);
+            assignTags(tag,asmLineCounter);
         }
         else if(isAinstruction(input))
         {
             //cout << lineCounter << " A instrution" << endl;
             asmLineCounter++;
         }
-        else if(isCinstruction(input))
+        else if(isCinstruction(input) || isCinstruction1(input) ||
+                isCinstruction2(input))
         {
             //cout << lineCounter << " C instrution" << endl;
             asmLineCounter++;
         }
-        else if(isCommentWithInstuction(input))
+        else if(isCommentWithInstuctionA(input) || isCommentWithInstuctionC(input)
+                || isCommentWithInstuctionC1(input)
+                || isCommentWithInstuctionC2(input))
         {
             //cout << lineCounter << " commentary whit insturction" << endl;
             asmLineCounter++;
