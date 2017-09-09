@@ -3,6 +3,7 @@
 #include <string>
 #include <stdio.h>
 #include <cstddef>
+#include <fstream>
 
 using namespace std;
 
@@ -116,6 +117,23 @@ void assignTags(string tag, int pos)
     symbols[tag] = pos;
 }
 
+string cleanAinstruction(string toClean)
+{
+    string clean = "";
+    size_t findAt = toClean.find_first_of("@");
+    for(size_t i = findAt+1; i < toClean.size() && toClean[i] != ' '; ++i)
+    {
+        clean += toClean[i];
+    }
+
+    return clean;
+}
+
+string encodeAinstruction()
+{
+
+}
+
 void initialize()
 {
     symbols.clear();
@@ -146,13 +164,32 @@ void initialize()
     symbols["THAT"] = 4;
 }
 
+void secondPass(string file)
+{
+    ifstream fileToRead(file);
+	string input;
+    int lineCounter = 1;
+	int asmLineCounter = 0;
+	while(getline(fileToRead,input))
+    {
+        if(isAinstruction(input))
+        {
+          string Ains = cleanAinstruction(input);
+          cout << Ains << " " << Ains.size() << endl;
+        }
+    }
+
+     fileToRead.seekg(0,fileToRead.beg);
+
+}
+
 void firstPass(string file)
 {
-	freopen(file.c_str(),"r",stdin);
+	ifstream fileToRead(file);
 	string input;
 	int lineCounter = 1;
 	int asmLineCounter = 0;
-	while(getline(cin,input))
+	while(getline(fileToRead,input))
 	{
 	    if(isTag(input))
         {
@@ -200,14 +237,18 @@ void firstPass(string file)
         lineCounter++;
 	}
 
-	fclose(stdin);
+    fileToRead.seekg(0,fileToRead.beg);
 
 }
 
 int main(int argc, char* argv[])
 {
     initialize();
-    if(argv[1] != NULL) firstPass(argv[1]);
+    if(argv[1] != NULL)
+    {
+        firstPass(argv[1]);
+        secondPass(argv[1]);
+    }
     else cout << "The execution should be: .exe nameOfyourfile.asm" << endl;
 
 	return 0;
