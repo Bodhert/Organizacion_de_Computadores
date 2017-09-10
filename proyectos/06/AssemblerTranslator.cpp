@@ -5,10 +5,15 @@
 #include <cstddef>
 #include <fstream>
 #include <bitset>
+#include <fstream>
 
 using namespace std;
 
 map<string,int> symbols;
+map<string,int> dest;
+map<string,int> comp;
+map<string,int> jump;
+
 int variablePos;
 
 
@@ -161,7 +166,7 @@ string encodeAinstruction(string aIns)
         if(!symbols.count(aIns))
         {
             symbols[aIns] = variablePos;
-            variablePos++;
+            variablePos++;   // controlar variable pos que no me sobreescriba los simbolos especiales
         }
 
         num = symbols[aIns];
@@ -173,33 +178,94 @@ string encodeAinstruction(string aIns)
 
 }
 
-string cleanCinstructions(string bIns)
+string cleanCinstructions(string cIns)
 {
     string clean = "";
-    for(int i = 0; i < bIns.size();++i)
+    for(int i = 0; i < cIns.size();++i)
     {
-        if(bIns[i] != ' ') clean += bIns[i];
+        if(cIns[i] != ' ') clean += cIns[i];
     }
 
     return clean;
 
 }
 
-string cleanCinstructionsWithComments(string bIns)
+string cleanCinstructionsWithComments(string cIns)
 {
     string clean = "";
-    size_t findComment = bIns.find_first_of("//");
+    size_t findComment = cIns.find_first_of("//");
     for(size_t i = 0 ; i < findComment; ++i )
     {
-        if(bIns[i]!=' ' ) clean += bIns[i];
+        if(cIns[i]!=' ' ) clean += cIns[i];
     }
 
     return clean;
+}
+
+string encodeCinstruction(string cIns, int type)
+{
+
+    if(type == 0)
+    {
+       string dest1 = "";
+       string comp1 = "";
+       size_t findEquals = cIns.find_first_of("=");
+       for(size_t i = 0; i < findEquals; ++i)  dest1 += cIns[i];
+       for(size_t i = findEquals+1; i < cIns.size(); ++i) comp1 += cIns[i];
+
+       if(!dest.count(dest1))
+       {
+           cout << dest1 << " is an invalid destination " << endl;
+           return " ";
+       }
+
+       if(!comp.count(comp1))
+       {
+            cout << comp1 << " is an invalid component " << endl;
+            return " ";
+       }
+
+        int temp = 0;
+        temp |= dest[dest1];
+        temp |= comp[comp1];
+        string ans = bitset<16>(temp).to_string();
+        return ans;
+    }
+    else
+    {
+        string comp1 = "";
+        string jump1 = "";
+       size_t findSemicolon = cIns.find_first_of(";");
+       for(size_t i = 0; i < findSemicolon; ++i)  comp1 += cIns[i];
+       for(size_t i = findSemicolon+1; i < cIns.size(); ++i) jump1 += cIns[i];
+
+       if(!comp.count(comp1))
+       {
+           cout << comp1 << " is an invalid componet " << endl;
+           return " ";
+       }
+
+       if(!jump.count(jump1))
+       {
+            cout << jump1 << " is not a valid jump " << endl;
+            return " ";
+       }
+
+        int temp = 0;
+        temp |= comp[comp1];
+        temp |= jump[jump1];
+        string ans = bitset<16>(temp).to_string();
+        return ans;
+    }
+
 }
 
 void initialize()
 {
     symbols.clear();
+    dest.clear();
+    comp.clear();
+    jump.clear();
     variablePos = 16;
 
     symbols["R0"] = 0;
@@ -225,12 +291,61 @@ void initialize()
     symbols["ARG"] = 2;
     symbols["THIS"] = 3;
     symbols["THAT"] = 4;
+
+    dest["M"] = 57352;
+    dest["D"] = 57360;
+    dest["MD"] = 57368;
+    dest["A"] = 57376;
+    dest["AM"] = 57384;
+    dest["AD"] = 57392;
+    dest["AMD"] = 57400;
+
+    comp["0"] = 60032;
+    comp["1"] = 61376;
+    comp["-1"] = 61120;
+    comp["D"] = 58112;
+    comp["A"] = 60416;
+    comp["!D"] = 58176;
+    comp["!A"] = 60480;
+    comp["-D"] = 58304;
+    comp["-A"] = 60608;
+    comp["D+1"] = 59328;
+    comp["A+1"] = 60864;
+    comp["D-1"] = 58240;
+    comp["A-1"] = 60544;
+    comp["D+A"] = 57472;
+    comp["D-A"] = 58560;
+    comp["A-D"] = 57792;
+    comp["D&A"] = 57344;
+    comp["D|A"] = 58688;
+    comp["M"] = 64512;
+    comp["!M"] = 64576;
+    comp["-M"] = 64704;
+    comp["M+1"] = 64960;
+    comp["M-1"] = 64640;
+    comp["D+M"] = 61568;
+    comp["D-M"] = 62656;
+    comp["M-D"] = 61888;
+    comp["D&M"] = 61440;
+    comp["D|M"] = 62784;
+
+    jump["JGT"] = 57345;
+    jump["JEQ"] = 57346;
+    jump["JGE"] = 57347;
+    jump["JLT"] = 57348;
+    jump["JNE"] = 57349;
+    jump["JLE"] = 57350;
+    jump["JMP"] = 57351;
+
+
 }
 
 void secondPass(string file)
 {
     ifstream fileToRead(file);
 	string input;
+	string ans = "";
+	bool write = true;
     int lineCounter = 1;
 	int asmLineCounter = 0;
 
@@ -241,47 +356,61 @@ void secondPass(string file)
         {
           string Ains = cleanAinstruction(input);
           string instruction = encodeAinstruction(Ains);
-          //cout << Ains <<  " " << instruction << endl;
+          ans += instruction + '\n';
         }
         else if(isCommentWithInstuctionA(input))
         {
             string Ains = cleanAinstructionWithComments(input);
             string instruction = encodeAinstruction(Ains);
-            //cout << Ains << " " << instruction << endl;
+            ans += instruction + '\n';
         }
         else if(isCinstruction(input))
         {
-            string Cins = cleanCinstructions(input);
-            cout << Cins << " " << Cins.size() << endl;
+            string cIns = cleanCinstructions(input);
+            string instruction = encodeCinstruction(cIns,0);
+            if(instruction == " ") break;
+            ans += instruction + '\n';
         }
         else if(isCommentWithInstuctionC(input))
         {
-            string Cins = cleanCinstructionsWithComments(input);
-            cout << Cins << " " << Cins.size() << endl;
+            string cIns = cleanCinstructionsWithComments(input);
+            string instruction = encodeCinstruction(cIns,0);
+            if(instruction == " ") break;
+            ans += instruction + '\n';
         }
         else if(isCinstruction1(input))
         {
-            string Cins = cleanCinstructions(input);
-            cout << Cins << " " << Cins.size() << endl;
+            string cIns = cleanCinstructions(input);
+            string instruction = encodeCinstruction(cIns,0);
+            if(instruction == " ") break;
+            ans += instruction + '\n';
         }
         else if(isCommentWithInstuctionC1(input))
         {
-            string Cins = cleanCinstructionsWithComments(input);
-            cout << Cins << " " << Cins.size() << endl;
+            string cIns = cleanCinstructionsWithComments(input);
+            string instruction = encodeCinstruction(cIns,0);
+            if(instruction == " ") break;
+            ans += instruction + '\n';
         }
         else if(isCinstruction2(input))
         {
-            string Cins = cleanCinstructions(input);
-            cout << Cins << " " << Cins.size() << endl;
+            string cIns = cleanCinstructions(input);
+            string instruction = encodeCinstruction(cIns,1);
+            if(instruction == " ") break;
+            ans += instruction + '\n';
         }
         else if(isCommentWithInstuctionC2(input))
         {
-            string Cins = cleanCinstructionsWithComments(input);
-            cout << Cins << " " << Cins.size() << endl;
+            string cIns = cleanCinstructionsWithComments(input);
+            string instruction = encodeCinstruction(cIns,1);
+            if(instruction == " ") break;
+            ans += instruction + '\n';
         }
 
     }
 
+     ofstream out("test.hack");
+     out << ans;
      fileToRead.seekg(0,fileToRead.beg);
 
 }
