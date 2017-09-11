@@ -6,6 +6,7 @@
 #include <fstream>
 #include <bitset>
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -19,7 +20,7 @@ int variablePos;
 
 bool isAinstruction(string toParse)
 {
-    regex Ainstruction("(\\\s*@)([a-zA-Z_$][a-zA-Z_$0-9\\.]*$|([[:digit:]]+))");
+    regex Ainstruction("(\\\s*@)([a-zA-Z_$][a-zA-Z_$0-9\\.]*(\\\s*)$|([[:digit:]]+)(\\\s*))");
     return regex_match(toParse,Ainstruction);
 }
 
@@ -43,7 +44,7 @@ bool isCinstruction2(string toParse)
 
 bool isCommentWithInstuctionA(string toParse)
 {
-    regex Acomment("(\\\s*@)[a-zA-Z_$][a-zA-Z_$0-9\\.]*\\\s*//\\\s*.*\\\s*");
+    regex Acomment("(\\\s*@)([a-zA-Z_$][a-zA-Z_$0-9\\.]*(\\\s*)\\\s*//\\\s*.*\\\s*$|([[:digit:]]+)(\\\s*)\\\s*//\\\s*.*\\\s*)");
     return regex_match(toParse,Acomment);
 }
 
@@ -124,11 +125,14 @@ void assignTags(string tag, int pos)
     symbols[tag] = pos;
 }
 
-string cleanAinstruction(string toClean)
+string cleanAinstruction(string in)
 {
+    string toClean;
+    istringstream iss(in);
+    iss >> toClean;
     string clean = "";
     size_t findAt = toClean.find_first_of("@");
-    for(size_t i = findAt+1; i < toClean.size() && toClean[i] != ' '; ++i)
+    for(size_t i = findAt+1; i < toClean.size() && toClean[i] != ' ' ; ++i)
     {
         clean += toClean[i];
     }
@@ -180,10 +184,11 @@ string encodeAinstruction(string aIns)
 
 string cleanCinstructions(string cIns)
 {
+
     string clean = "";
     for(int i = 0; i < cIns.size();++i)
     {
-        if(cIns[i] != ' ') clean += cIns[i];
+        if(cIns[i]!=' ' && cIns[i]!='\n' && cIns[i]!='\r' && cIns[i] != '\r\n') clean += cIns[i];
     }
 
     return clean;
@@ -196,7 +201,7 @@ string cleanCinstructionsWithComments(string cIns)
     size_t findComment = cIns.find_first_of("//");
     for(size_t i = 0 ; i < findComment; ++i )
     {
-        if(cIns[i]!=' ' ) clean += cIns[i];
+        if(cIns[i]!=' ' && cIns[i]!='\n' && cIns[i]!='\r' && cIns[i] != '\r\n' ) clean += cIns[i];
     }
 
     return clean;
@@ -349,9 +354,10 @@ void secondPass(string file)
     int lineCounter = 1;
 	int asmLineCounter = 0;
 
-
+   // int cont = 0;
 	while(getline(fileToRead,input))
     {
+     //   cout << "procesing line " << cont++ << endl;
         if(isAinstruction(input))
         {
           string Ains = cleanAinstruction(input);
@@ -368,49 +374,80 @@ void secondPass(string file)
         {
             string cIns = cleanCinstructions(input);
             string instruction = encodeCinstruction(cIns,0);
-            if(instruction == " ") break;
+            if(instruction == " ")
+            {
+                write = false;
+                break;
+            }
             ans += instruction + '\n';
         }
         else if(isCommentWithInstuctionC(input))
         {
             string cIns = cleanCinstructionsWithComments(input);
             string instruction = encodeCinstruction(cIns,0);
-            if(instruction == " ") break;
+            if(instruction == " ")
+            {
+                write = false;
+                break;
+            }
             ans += instruction + '\n';
         }
         else if(isCinstruction1(input))
         {
             string cIns = cleanCinstructions(input);
             string instruction = encodeCinstruction(cIns,0);
-            if(instruction == " ") break;
+            if(instruction == " ")
+            {
+                write = false;
+                break;
+            }
             ans += instruction + '\n';
         }
         else if(isCommentWithInstuctionC1(input))
         {
             string cIns = cleanCinstructionsWithComments(input);
             string instruction = encodeCinstruction(cIns,0);
-            if(instruction == " ") break;
+            if(instruction == " ")
+            {
+                write = false;
+                break;
+            }
             ans += instruction + '\n';
         }
         else if(isCinstruction2(input))
         {
             string cIns = cleanCinstructions(input);
             string instruction = encodeCinstruction(cIns,1);
-            if(instruction == " ") break;
+            if(instruction == " ")
+            {
+                write = false;
+                break;
+            }
             ans += instruction + '\n';
         }
         else if(isCommentWithInstuctionC2(input))
         {
             string cIns = cleanCinstructionsWithComments(input);
             string instruction = encodeCinstruction(cIns,1);
-            if(instruction == " ") break;
+            if(instruction == " ")
+            {
+                write = false;
+                break;
+            }
             ans += instruction + '\n';
         }
 
     }
 
-     ofstream out("test.hack");
+    if (write)
+    {
+     size_t dot = file.find_first_of(".");
+     string outName = "";
+     for(size_t i = 0; i <= dot; ++i) outName += file[i];
+     ofstream out(outName + "hack");
      out << ans;
+    }
+
      fileToRead.seekg(0,fileToRead.beg);
 
 }
@@ -466,7 +503,9 @@ void firstPass(string file)
            break;
         }
 
+        //cout << "procecing line: " << lineCounter << endl;
         lineCounter++;
+
 	}
 
     fileToRead.seekg(0,fileToRead.beg);
