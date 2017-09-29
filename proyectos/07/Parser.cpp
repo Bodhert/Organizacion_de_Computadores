@@ -120,10 +120,3 @@ int Parser::arg2()
         }
     }
 }
-
-
-/*
-regex rr (R"(((^\s*)(push|pop)\s+(argument|local|static|constant|this|that|pointer|temp)\s+([1-9]\d*|0))(\s*(\/\/.*)?)$)");
-	bool c = regex_match("    pop pointer 1",rr);
-	cout << c;
-*/
