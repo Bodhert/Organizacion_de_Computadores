@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 using namespace std;
- 
+
 regex memoryAccess(R"(((^\s*)(push|pop)\s+(argument|local|static|constant|this|that|pointer|temp)\s+([1-9]\d*|0))(\s*(\/\/.*)?)$)");
 regex artihmetics(R"(((^\s*)(add|sub|neg|eq|gt|lt|and|or|not))(\s*(\/\/.*)?)$)");
 regex blankLines(R"((^\s*(\/\/.*)?$))");
@@ -41,7 +41,7 @@ Parser::Parser(string file_name)
  segment["local"] = "local";
  segment["static"] = "static";
  segment["constant"] = "constant";
- segment["this"] = "that";
+ segment["this"] = "this";
  segment["that"] = "that";
  segment["pointer"] = "pointer";
  segment["temp"] =  "temp";

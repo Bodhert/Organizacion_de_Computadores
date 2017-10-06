@@ -17,6 +17,11 @@ int main()
         string arg1="";
         int arg2 = -10;
 
+        if(commandType == "Null")
+        {
+            cout << "bad gramar" << endl;
+            break;
+        }
         if(commandType == "empty_line") continue;
 
         if(commandType != "C_RETURN")
@@ -29,7 +34,7 @@ int main()
            || commandType == "C_FUNCTION" || commandType == "C_CALL")
         {
             arg2 = parser->arg2();
-            if(commandType == "C_PUSH")
+            if(commandType == "C_PUSH" || commandType == "C_POP")
             {
                 codeWriter->writePushPop(commandType,arg1,arg2);
             }
