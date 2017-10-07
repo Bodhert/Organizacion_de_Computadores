@@ -1,6 +1,6 @@
 #include "CodeWriter.h"
 #include <iostream>
-
+#include <fstream>
 
 using namespace std;
 
@@ -9,7 +9,14 @@ int artFlag = 0;
 
 CodeWriter::CodeWriter(string out_file_name)
 {
+    _out_file = out_file_name + ".asm";
+}
 
+void CodeWriter::write()
+{
+
+    ofstream out(_out_file);
+    out << translate;
 }
 
 void CodeWriter::writePushPop(string command,string segment, int index)
@@ -34,7 +41,8 @@ void CodeWriter::writePushPop(string command,string segment, int index)
           c_PushPop_to_asm += "M=D\n";
           c_PushPop_to_asm += "@R0\n";
           c_PushPop_to_asm += "M=M+1\n";
-          cout << c_PushPop_to_asm;
+          translate += c_PushPop_to_asm;
+          //cout << c_PushPop_to_asm;
         }
         else if(segment == "temp")
         {
@@ -45,7 +53,8 @@ void CodeWriter::writePushPop(string command,string segment, int index)
           c_PushPop_to_asm += "M=D\n";
           c_PushPop_to_asm += "@R0\n";
           c_PushPop_to_asm += "M=M+1\n";
-          cout << c_PushPop_to_asm;
+          translate += c_PushPop_to_asm;
+          //cout << c_PushPop_to_asm;
         }
         else
         {
@@ -60,7 +69,8 @@ void CodeWriter::writePushPop(string command,string segment, int index)
             c_PushPop_to_asm += "M=D\n";
             c_PushPop_to_asm += "@R0\n";
             c_PushPop_to_asm += "M=M+1\n";
-            cout << c_PushPop_to_asm;
+            translate += c_PushPop_to_asm;
+            //cout << c_PushPop_to_asm;
         }
   }
   else
@@ -68,15 +78,13 @@ void CodeWriter::writePushPop(string command,string segment, int index)
 
     if(segment == "temp")
     {
-        //error con el segmento temp
         c_PushPop_to_asm += "@R0\n";
         c_PushPop_to_asm += "AM=M-1\n";
         c_PushPop_to_asm += "D=M\n";
-        //c_PushPop_to_asm += "@R5\n";
-        //c_PushPop_to_asm += "M=D\n";
         c_PushPop_to_asm += "@" + seg + "\n";
         c_PushPop_to_asm += "M=D\n";
-        cout << c_PushPop_to_asm;
+        translate += c_PushPop_to_asm;
+        //cout << c_PushPop_to_asm;
     }
     else
     {
@@ -96,7 +104,8 @@ void CodeWriter::writePushPop(string command,string segment, int index)
         c_PushPop_to_asm += "@R6\n";
         c_PushPop_to_asm += "A=M\n";
         c_PushPop_to_asm += "M=D\n";
-        cout << c_PushPop_to_asm;
+        translate += c_PushPop_to_asm;
+        //cout << c_PushPop_to_asm;
     }
 
   }
@@ -116,7 +125,8 @@ void CodeWriter::writeAritmetic(string arg)
         aritmetic += "M=M-1\n";
         aritmetic += "A=M-1\n";
         aritmetic += "M=D+M\n";
-        cout << aritmetic;
+        translate += aritmetic;
+        //cout << aritmetic;
     }
     else if(arg == "sub")
     {
@@ -134,7 +144,8 @@ void CodeWriter::writeAritmetic(string arg)
         aritmetic += "D=D-M\n";
         aritmetic += "A=A-1\n";
         aritmetic += "M=D\n";
-        cout << aritmetic;
+        translate += aritmetic;
+        //cout << aritmetic;
     }
     else if(arg == "neg")
     {
@@ -144,7 +155,8 @@ void CodeWriter::writeAritmetic(string arg)
         aritmetic += "A=D\n";
         aritmetic += "D=M\n";
         aritmetic += "M=-M\n";
-        cout << aritmetic;
+        translate += aritmetic;
+        //cout << aritmetic;
     }
     else if(arg == "eq")
     {
@@ -171,7 +183,8 @@ void CodeWriter::writeAritmetic(string arg)
         aritmetic += "M=-1\n";
         aritmetic += "(SKIP" + to_string(artFlag) + ")\n";
         artFlag++;
-        cout << aritmetic;
+        translate += aritmetic;
+        //cout << aritmetic;
     }
     else if(arg == "gt")
     {
@@ -197,7 +210,8 @@ void CodeWriter::writeAritmetic(string arg)
         aritmetic += "M=-1\n";
         aritmetic += "(SKIP" + to_string(artFlag) + ")\n";
         artFlag++;
-        cout << aritmetic;
+        translate += aritmetic;
+        //cout << aritmetic;
     }
     else if(arg == "lt")
     {
@@ -223,7 +237,8 @@ void CodeWriter::writeAritmetic(string arg)
         aritmetic += "M=-1\n";
         aritmetic += "(SKIP" + to_string(artFlag) + ")\n";
         artFlag++;
-        cout << aritmetic;
+        translate += aritmetic;
+        //cout << aritmetic;
     }
     else if(arg == "and")
     {
@@ -236,7 +251,8 @@ void CodeWriter::writeAritmetic(string arg)
         aritmetic += "M=M-1\n";
         aritmetic += "A=M-1\n";
         aritmetic += "M=D&M\n";
-        cout << aritmetic;
+        translate += aritmetic;
+        //cout << aritmetic;
     }
     else if(arg == "or")
     {
@@ -249,7 +265,8 @@ void CodeWriter::writeAritmetic(string arg)
         aritmetic += "M=M-1\n";
         aritmetic += "A=M-1\n";
         aritmetic += "M=D|M\n";
-        cout << aritmetic;
+        translate += aritmetic;
+        //cout << aritmetic;
     }
     else if(arg == "not")
     {
@@ -259,7 +276,8 @@ void CodeWriter::writeAritmetic(string arg)
         aritmetic += "A=D\n";
         aritmetic += "D=M\n";
         aritmetic += "M=!M\n";
-        cout << aritmetic;
+        translate += aritmetic;
+        //cout << aritmetic;
     }
 }
 
