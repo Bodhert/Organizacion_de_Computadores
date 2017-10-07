@@ -11,4 +11,5 @@ public :
     void writeAritmetic(string command);
     void writePushPop(string command,string segment, int index);
     void close();
+    void write();
 };

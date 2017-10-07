@@ -14,4 +14,5 @@ public:
     string commandType();
     string arg1();
     int arg2();
+    int line();
 };

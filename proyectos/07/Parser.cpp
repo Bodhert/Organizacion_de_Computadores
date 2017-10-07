@@ -11,6 +11,7 @@ string currentCommand;
 ifstream  file;
 map<string,string> c_types;
 map<string,string> segment;
+int line1 = 0;
 
 //ifstream file ;
 
@@ -56,6 +57,12 @@ bool Parser::hasMoreCommands()
 void Parser::advance()
 {
     getline(file,currentCommand);
+    line1++;
+}
+
+int Parser::line()
+{
+    return line1;
 }
 
 string Parser::commandType()
