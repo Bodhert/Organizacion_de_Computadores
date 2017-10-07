@@ -28,6 +28,8 @@ void CodeWriter::writePushPop(string command,string segment, int index)
     else if(segment == "this") seg = "R3";
     else if(segment == "that") seg = "R4";
     else if(segment == "temp") seg = "R" + to_string(index+5);
+    else if(segment == "pointer") seg = "R" + to_string(index+3);
+    else if(segment == "static") seg = to_string(index+16);
 
   if(command == "C_PUSH")
   {
@@ -44,7 +46,7 @@ void CodeWriter::writePushPop(string command,string segment, int index)
           translate += c_PushPop_to_asm;
           //cout << c_PushPop_to_asm;
         }
-        else if(segment == "temp")
+        else if(segment == "temp" || segment == "pointer" || segment == "static")
         {
           c_PushPop_to_asm += "@" + seg +  "\n";
           c_PushPop_to_asm += "D=M\n";
@@ -76,7 +78,7 @@ void CodeWriter::writePushPop(string command,string segment, int index)
   else
   {
 
-    if(segment == "temp")
+    if(segment == "temp" || segment == "pointer" || segment == "static")
     {
         c_PushPop_to_asm += "@R0\n";
         c_PushPop_to_asm += "AM=M-1\n";
