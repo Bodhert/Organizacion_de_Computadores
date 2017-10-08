@@ -3,4 +3,4 @@ To compile and execute the program
 
 $make -f makefile
 
-$./vmToasm {name_of_your_file}.vm
+$./vmToasm {name_of_your_file}.vm 
