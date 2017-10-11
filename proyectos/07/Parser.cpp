@@ -4,9 +4,9 @@
 #include <fstream>
 using namespace std;
 
-regex memoryAccess(R"(((^\s*)(push|pop)\s+(argument|local|static|constant|this|that|pointer|temp)\s+([1-9]\d*|0))(\s*(\/\/.*)?)$)");
-regex artihmetics(R"(((^\s*)(add|sub|neg|eq|gt|lt|and|or|not))(\s*(\/\/.*)?)$)");
-regex blankLines(R"((^\s*(\/\/.*)?$))");
+regex memoryAccess(R"(((^\s*)(push|pop)\s+(argument|local|static|constant|this|that|pointer|temp)\s+([1-9]\d*|0))(\s*(\/\/.*)?)(\r)*$)");
+regex artihmetics(R"(((^\s*)(add|sub|neg|eq|gt|lt|and|or|not))(\s*(\/\/.*)?)(\r)*$)");
+regex blankLines(R"((^\s*(\/\/.*)?(\r)*$))");
 string currentCommand;
 ifstream  file;
 map<string,string> c_types;
