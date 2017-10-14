@@ -9,6 +9,7 @@ regex artihmetics(R"(((^\s*)(add|sub|neg|eq|gt|lt|and|or|not))(\s*(\/\/.*)?)(\r)
 regex blankLines(R"((^\s*(\/\/.*)?(\r)*$))");
 regex labels(R"(((^\s*)label\s+[A-z])\w*(\s*(\/\/.*)?)(\r)*$)");
 regex if_goto(R"(((^\s*)if-goto\s+[A-z])\w*(\s*(\/\/.*)?)(\r)*$)");
+regex _goto(R"(((^\s*)goto\s+[A-z])\w*(\s*(\/\/.*)?)(\r)*$)");
 string currentCommand;
 ifstream  file;
 map<string,string> c_types;
@@ -95,6 +96,10 @@ string Parser::commandType()
     {
         if(c_types.count("if-goto")) return c_types["if-goto"];
     }
+    else if(regex_match(currentCommand, _goto))
+    {
+        if(c_types.count("goto")) return c_types["goto"];
+    }
     else if(regex_match(currentCommand,blankLines)) return "empty_line";
 
   return "Null";
@@ -139,6 +144,21 @@ string Parser::arg1()
     else if(regex_match(currentCommand, if_goto))
     {
         size_t found = currentCommand.find_first_of("if-goto") + 7;
+        string temp;
+        int posLabel = -1;
+        for(size_t i = found; i < currentCommand.size()
+            && currentCommand[i] == ' '; ++i)
+                posLabel = i+1;
+
+        for(int i = posLabel; (isalnum(currentCommand[i]) ||
+            currentCommand[i] == '_') && i < currentCommand.size(); ++i)
+                temp += currentCommand[i];
+
+        return temp;
+    }
+    else if(regex_match(currentCommand,_goto))
+    {
+        size_t found = currentCommand.find_first_of("goto") + 4;
         string temp;
         int posLabel = -1;
         for(size_t i = found; i < currentCommand.size()
