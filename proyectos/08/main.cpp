@@ -50,6 +50,7 @@ int main(int argc, char* argv[])
                      if(commandType == "C_ARITHMETIC") codeWriter->writeAritmetic(arg1);
                      else if(commandType == "C_LABEL") codeWriter->writeLabel(arg1);
                      else if(commandType == "C_IF") codeWriter->writeIf(arg1);
+                     else if(commandType == "C_GOTO") codeWriter->writeGoto(arg1);
                 }
 
                 if(commandType == "C_PUSH" || commandType == "C_POP"

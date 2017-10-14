@@ -299,3 +299,11 @@ void CodeWriter::writeIf(string label)
     translate += if_goto;
 }
 
+void CodeWriter::writeGoto(string label)
+{
+    string _goto;
+    _goto += "@" + label + "\n";
+    _goto += "0;JMP\n";
+    translate += _goto;
+}
+

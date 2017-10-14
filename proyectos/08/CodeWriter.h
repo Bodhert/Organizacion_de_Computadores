@@ -12,6 +12,7 @@ public :
     void writePushPop(string command,string segment, int index);
     void writeIf(string label);
     void writeLabel(string label);
+    void writeGoto(string label);
     void close();
     void write();
 };
