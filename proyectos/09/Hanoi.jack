@@ -1,0 +1,138 @@
+class Hanoi
+{
+    field int discos;
+    field int numDiscosTorre1;
+    field int numDiscosTorre2;
+    field int numDiscosTorre3;
+    field int numTamTorre1;
+    field int numTamTorre2;
+    field int numTamTorre3;
+    field int numXTorre1;
+    field int numXTorre2;
+    field int numXTorre3;
+
+    field int posDiscox10;
+	field int posDiscoy1;
+	field int posDiscox9;
+	field int posDiscoy2;
+	field int posDiscox8;
+	field int posDiscoy3;
+	field int posDiscox7;
+	field int posDiscoy4;
+	field int posDiscox6;
+	field int posDiscoy5;
+	field int posDiscox5;
+	field int posDiscoy6;
+	field int posDiscox4;
+	field int posDiscoy7;
+	field int posDiscox3;
+	field int posDiscoy8;
+	field int posDiscox2;
+	field int posDiscoy9;
+	field int posDiscox1;
+	field int posDiscoy10;
+	field int tamDisco10;
+	field int tamDisco9;
+	field int tamDisco8;
+	field int tamDisco7;
+	field int tamDisco6;
+	field int tamDisco5;
+	field int tamDisco4;
+	field int tamDisco3;
+	field int tamDisco2;
+	field int tamDisco1;
+	field int tamAncho;
+    
+    
+    constructor Hanoi new(int numDiscos)
+    {
+        let posDiscox10 = 50;
+        let posDiscoy1  = 200;
+        let posDiscox9  = 55;
+        let posDiscoy2  = 185;
+        let posDiscox8  = 60;
+        let posDiscoy3  = 170;
+        let posDiscox7  = 65;
+        let posDiscoy4  = 155;
+        let posDiscox6  = 70;
+        let posDiscoy5  = 140;
+        let posDiscox5  = 75;
+        let posDiscoy6  = 125;
+        let posDiscox4  = 80;
+        let posDiscoy7  = 110;
+        let posDiscox3  = 85;
+        let posDiscoy8  = 95;
+        let posDiscox2  = 90;
+        let posDiscoy9  = 80;
+        let posDiscox1  = 95;
+        let posDiscoy10 = 65;
+        let tamDisco10  = 120;
+        let tamDisco9   = 110;
+        let tamDisco8   = 100;
+        let tamDisco7   = 90;
+        let tamDisco6   = 80;
+        let tamDisco5   = 70;
+        let tamDisco4   = 60;
+        let tamDisco3   = 50;
+        let tamDisco2   = 40;
+        let tamDisco1   = 30;
+        let tamAncho    = 10;
+
+        let discos = numDiscos;
+        let numDiscosTorre1 = numDiscos;
+        let numDiscosTorre2 = 0;
+        let numDiscosTorre3 = 0;
+        do repaint();
+
+        return this;
+    }
+
+    method void empezar()
+    {   
+      //  let numTamTorre1 = inicioTD(discos);
+      //  let numXTorre1 = inicioX(discos, 0);
+        let numTamTorre2 = 0;
+        let numDiscosTorre3 = 0;
+        let numXTorre2 = 0;
+        let numXTorre3 = 0;
+
+        do Sys.wait(1000);
+
+        //repaint();
+        //resolver();
+        return;
+    }
+
+    method int totalDiscos(int numTorre)
+    {
+        if(numTorre = 0)
+        {
+            return numDiscosTorre1;
+        }
+        if(numTorre = 1)
+        {
+            return numDiscosTorre2;
+        }
+        return numDiscosTorre3;
+    }
+
+    method void dibujaTorres()
+    {
+        do Screen.drawRectangle(105, 10, 10, 210);
+       // do Screen.drawRectangle(251, 10, 10, 210);
+        //do Screen.drawRectangle(397, 10, 10, 210);
+        return;
+    }
+
+    method void repaint()
+    {
+        var int numTotalDiscos;
+        do dibujaTorres();
+        let numTotalDiscos = totalDiscos(0);
+        //do dibujaDiscos(0, numTotalDiscos, numXTorre1, posDiscoy1, numTamTorre1)
+        //let numTotalDiscos = totalDiscos(1);
+        return;
+    }
+
+   
+}
