@@ -1,0 +1,23 @@
+class Main
+{
+    function void main()
+    {
+        var int discos;
+        var Hanoi hanoi;
+        let discos = -1;
+        let discos = Keyboard.readInt("Entre el numero de discos entre 1 y 10; 0 terminara el programa");
+
+        while((discos < 0) | (discos > 10) )
+        {
+            let discos = Keyboard.readInt("Entre el numero de discos entre 1 y 10; 0 terminara el programa");    
+        }
+
+        if( ((discos > 1)|(discos = 0)) & ((discos < 10) | (discos = 10))  )
+        {
+            
+            let hanoi = Hanoi.new(discos);
+        }
+
+        return;
+    }
+}
