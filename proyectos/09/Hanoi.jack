@@ -118,15 +118,20 @@ class Hanoi
 
     method void dibujaTorres()
     {
-        do Screen.drawRectangle(105, 10, 10, 210);
-       // do Screen.drawRectangle(251, 10, 10, 210);
-        //do Screen.drawRectangle(397, 10, 10, 210);
+        do Screen.drawRectangle(87-12, 0, (87-12) + 25 , 255); //256 * 512 () || 512 * 256
+        do Screen.drawRectangle(262-12, 0, (262-12) + 25, 255);
+        //do Screen.drawRectangle(25, 225, 175, 255);  //disco mas grande torre 1
+        do Sys.wait(1000);
+        //do Screen.drawRectangle(200, 225, 350, 255);  //disco mas grande torre  2        
+        do Screen.drawRectangle(412-12, 0, (412-12) + 25, 255);
         return;
     }
 
     method void repaint()
     {
+        
         var int numTotalDiscos;
+        // do Screen.clearScreen();
         do dibujaTorres();
         let numTotalDiscos = totalDiscos(0);
         //do dibujaDiscos(0, numTotalDiscos, numXTorre1, posDiscoy1, numTamTorre1)
