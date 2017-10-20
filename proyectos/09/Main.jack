@@ -4,6 +4,7 @@ class Main
     {
         var int discos;
         var Hanoi hanoi;
+
         let discos = -1;
         let discos = Keyboard.readInt("Entre el numero de discos entre 1 y 10; 0 terminara el programa");
 
