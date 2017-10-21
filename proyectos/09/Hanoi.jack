@@ -1,51 +1,54 @@
-class Hanoi
+class Hanoi 
 {
-    field int discos;
+	field int discos;
     field int numDiscosTorre1;
-    field int numDiscosTorre2;
-    field int numDiscosTorre3;
-    field int numTamTorre1;
-    field int numTamTorre2;
-    field int numTamTorre3;
-    field int numXTorre1;
-    field int numXTorre2;
-    field int numXTorre3;
+	field int numDiscosTorre2;
+	field int numDiscosTorre3;
+	field int numTamTorre1;
+	field int numTamTorre2;
+	field int numTamTorre3;
+	field int numXTorre1;
+	field int numXTorre2;
+	field int numXTorre3;
 
-    field int posDiscox10;
-	field int posDiscoy1;
-	field int posDiscox9;
-	field int posDiscoy2;
-	field int posDiscox8;
-	field int posDiscoy3;
-	field int posDiscox7;
-	field int posDiscoy4;
-	field int posDiscox6;
-	field int posDiscoy5;
-	field int posDiscox5;
-	field int posDiscoy6;
-	field int posDiscox4;
-	field int posDiscoy7;
-	field int posDiscox3;
-	field int posDiscoy8;
-	field int posDiscox2;
-	field int posDiscoy9;
-	field int posDiscox1;
-	field int posDiscoy10;
-	field int tamDisco10;
-	field int tamDisco9;
-	field int tamDisco8;
-	field int tamDisco7;
-	field int tamDisco6;
-	field int tamDisco5;
-	field int tamDisco4;
-	field int tamDisco3;
-	field int tamDisco2;
-	field int tamDisco1;
-	field int tamAncho;
+	field  int posDiscox10; 
+	field  int posDiscoy1 ; 
+	field  int posDiscox9 ; 
+	field  int posDiscoy2 ; 
+	field  int posDiscox8 ; 
+	field  int posDiscoy3 ; 
+	field  int posDiscox7 ; 
+	field  int posDiscoy4 ; 
+	field  int posDiscox6 ; 
+	field  int posDiscoy5 ; 
+	field  int posDiscox5 ; 
+	field  int posDiscoy6 ; 
+	field  int posDiscox4 ; 
+	field  int posDiscoy7 ; 
+	field  int posDiscox3 ; 
+	field  int posDiscoy8 ; 
+	field  int posDiscox2 ; 
+	field  int posDiscoy9 ; 
+	field  int posDiscox1 ; 
+	field  int posDiscoy10; 
+	field  int tamDisco10 ; 
+	field  int tamDisco9  ; 
+	field  int tamDisco8  ; 
+	field  int tamDisco7  ; 
+	field  int tamDisco6  ; 
+	field  int tamDisco5  ; 
+	field  int tamDisco4  ; 
+	field  int tamDisco3  ; 
+	field  int tamDisco2  ; 
+	field  int tamDisco1  ; 
+	field  int tamAncho   ; 
+
     
-    
-    constructor Hanoi new(int numDiscos)
-    {
+
+// Colocar 3 arreglos para indicar el tamaño de cada disco en cada posición del arreglo
+	
+	constructor Hanoi new(int numDiscos) 
+	{
         let posDiscox10 = 50;
         let posDiscoy1  = 200;
         let posDiscox9  = 55;
@@ -77,67 +80,165 @@ class Hanoi
         let tamDisco2   = 40;
         let tamDisco1   = 30;
         let tamAncho    = 10;
+		let discos = numDiscos;
+		let numDiscosTorre1 = numDiscos;
+		let numDiscosTorre2 = 0;
+		let numDiscosTorre3 = 0;
+		//do repaint();
+        return this ;
+	}
 
-        let discos = numDiscos;
-        let numDiscosTorre1 = numDiscos;
-        let numDiscosTorre2 = 0;
-        let numDiscosTorre3 = 0;
-        do repaint();
-
-        return this;
-    }
-
-    method void empezar()
-    {   
-      //  let numTamTorre1 = inicioTD(discos);
-      //  let numXTorre1 = inicioX(discos, 0);
-        let numTamTorre2 = 0;
-        let numDiscosTorre3 = 0;
-        let numXTorre2 = 0;
-        let numXTorre3 = 0;
-
-        do Sys.wait(1000);
-
-        //repaint();
-        //resolver();
+	method void empezar()
+	{
+		let numTamTorre1 = inicioTD(discos);
+		let numXTorre1 = inicioX(discos, 0);
+		let numTamTorre2 = 0;
+		let numTamTorre3 = 0;
+		let numXTorre2 = 0;
+		let numXTorre3 = 0;
+		
+		do Sys.wait(1000);
+		 
+	
+		do repaint();
+		do resolver(discos, 0, 1, 2, inicioTD(discos));
         return;
-    }
+	}
+	
+	method void resolver(int n, int inicio, int auxiliar, int fin, int tamDisco) 
+	{
+		return;
+	}
 
-    method int totalDiscos(int numTorre)
-    {
-        if(numTorre = 0)
-        {
-            return numDiscosTorre1;
-        }
-        if(numTorre = 1)
-        {
-            return numDiscosTorre2;
-        }
-        return numDiscosTorre3;
-    }
+	method void dibujaTorres() 
+	{
+        do Screen.drawRectangle(87-12, 0, (87-12) + 10 , 255); //256 * 512 () || 512 * 256
+        do Screen.drawRectangle(262-12, 0, (262-12) + 10, 255);
+        do Screen.drawRectangle(412-12, 0, (412-12) + 10, 255);
+		return;
+	}
 
-    method void dibujaTorres()
-    {
-        do Screen.drawRectangle(87-12, 0, (87-12) + 25 , 255); //256 * 512 () || 512 * 256
-        do Screen.drawRectangle(262-12, 0, (262-12) + 25, 255);
-        //do Screen.drawRectangle(25, 225, 175, 255);  //disco mas grande torre 1
-        do Sys.wait(1000);
-        //do Screen.drawRectangle(200, 225, 350, 255);  //disco mas grande torre  2        
-        do Screen.drawRectangle(412-12, 0, (412-12) + 25, 255);
+	method int totalDiscos(int numTorre) 
+	{
+		if(numTorre = 0)
+			{return numDiscosTorre1;}
+		if(numTorre = 1)
+			{return numDiscosTorre2;}
+		return numDiscosTorre3;
+	}
+	
+	method int inicioX(int numDiscos, int numTorre) 
+	{
+		if(numDiscos = 1)
+			{return posDiscox1 + (146 * numTorre);}
+		if(numDiscos = 2)
+			{return posDiscox2 + (146 * numTorre);}
+		if(numDiscos = 3)
+			{return posDiscox3 + (146 * numTorre);}
+		if(numDiscos = 4)
+			{return posDiscox4 + (146 * numTorre);}
+		if(numDiscos = 5)
+			{return posDiscox5 + (146 * numTorre);}
+		if(numDiscos = 6)
+			{return posDiscox6 + (146 * numTorre);}
+		if(numDiscos = 7)
+			{return posDiscox7 + (146 * numTorre);}
+    	if(numDiscos = 8)
+			{return posDiscox8 + (146 * numTorre);}
+		if(numDiscos = 9)
+			{return posDiscox9 + (146 * numTorre);}
+		if(numDiscos = 10)
+			{return posDiscox10 + (146 * numTorre);}
+		return 0;
+	}
+
+	method int inicioTD(int numDiscos) 
+	{
+		if(numDiscos = 1)
+			{return tamDisco1;}
+		if(numDiscos = 2)
+			{return tamDisco2;}
+		if(numDiscos = 3)
+			{return tamDisco3;}
+		if(numDiscos = 4)
+			{return tamDisco4;}
+		if(numDiscos = 5)
+			{return tamDisco5;}
+		if(numDiscos = 6)
+			{return tamDisco6;}
+		if(numDiscos = 7)
+			{return tamDisco7;}
+		if(numDiscos = 8)
+			{return tamDisco8;}
+		if(numDiscos = 9)
+			{return tamDisco9;}
+		if(numDiscos = 10)
+			{return tamDisco10;}
+		return 0;
+	}
+
+	method void dibujaDiscos( int numTorre, int numDiscos, int numPosXini, int numPosYini, int numTamDisco) {
+		
+		var int numTotalDiscos;
+        var int numTD ;
+        let numTotalDiscos = numDiscos;
+        let numTD = numTamDisco;
+		
+
+		//debug
+		do Output.printInt(numPosXini);
+		do Output.println();
+		do Output.printInt(numPosYini);
+		do Output.println();		
+		do Output.printInt(numTD);
+		do Output.println();				
+		do Output.printInt(tamAncho);
+		do Output.println();
+		do Output.println();				
+		
+        do Screen.drawRectangle(numPosXini,numPosYini,numPosXini + numTD,numPosYini + tamAncho);
+        //let numPosXini = numPosXini + 5;
+        let numPosYini = numPosYini - 15;
+        let numTD = numTD - 10;
+        let numTotalDiscos = numTotalDiscos - 1 ;
+		while ((numTotalDiscos > 1)|(numTotalDiscos = 1))
+        {
+			do Output.printInt(numPosXini);
+			do Output.println();
+			do Output.printInt(numPosYini);
+			do Output.println();		
+			do Output.printInt(numTD);
+			do Output.println();				
+			do Output.printInt(tamAncho);
+			do Output.println();
+
+            do Screen.drawRectangle(numPosXini,numPosYini,numPosXini + numTD,numPosYini + tamAncho);
+            let numPosXini = numPosXini + 5;
+            let numPosYini = numPosYini - 15;
+            let numTD = numTD - 10;
+            let numTotalDiscos = numTotalDiscos - 1 ;
+        }
         return;
-    }
+	}
+	
+	method void paintComponent () {
+		var int numTotalDiscos ;
+
+		do dibujaTorres();
+		let numTotalDiscos = totalDiscos(0);
+		do dibujaDiscos( 0, numTotalDiscos, numXTorre1, posDiscoy1, numTamTorre1);
+		// let numTotalDiscos = totalDiscos(1);
+		// do dibujaDiscos(1, numTotalDiscos, numXTorre2, posDiscoy1, numTamTorre2);
+		// let numTotalDiscos = totalDiscos(2);
+		// do dibujaDiscos(2, numTotalDiscos, numXTorre3, posDiscoy1, numTamTorre3);
+        return;
+	}
 
     method void repaint()
-    {
-        
-        var int numTotalDiscos;
-        // do Screen.clearScreen();
-        do dibujaTorres();
-        let numTotalDiscos = totalDiscos(0);
-        //do dibujaDiscos(0, numTotalDiscos, numXTorre1, posDiscoy1, numTamTorre1)
-        //let numTotalDiscos = totalDiscos(1);
-        return;
+    {   
+        do Screen.clearScreen();
+        do paintComponent();
+        return ;
     }
-
-   
+	
 }

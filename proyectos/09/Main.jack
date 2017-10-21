@@ -13,10 +13,11 @@ class Main
             let discos = Keyboard.readInt("Entre el numero de discos entre 1 y 10; 0 terminara el programa");    
         }
 
-        if( ((discos > 1)|(discos = 0)) & ((discos < 10) | (discos = 10))  )
+        if( ((discos > 1)|(discos = 1)) & ((discos < 10) | (discos = 10))  )
         {
             
             let hanoi = Hanoi.new(discos);
+            do hanoi.empezar();
         }
 
         return;
