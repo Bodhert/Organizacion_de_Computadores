@@ -322,9 +322,9 @@ class Hanoi
 
 	method void dibujaTorres() 
 	{
-        do Screen.drawRectangle(87-12, 0, (87-12) + 10 , 255); //256 * 512 () || 512 * 256
+        do Screen.drawRectangle(87+12, 0, (87+12) + 10 , 255); //256 * 512 () || 512 * 256
         do Screen.drawRectangle(262-12, 0, (262-12) + 10, 255);
-        do Screen.drawRectangle(412-12, 0, (412-12) + 10, 255);
+        do Screen.drawRectangle(412-15, 0, (412-15) + 10, 255);
 		return;
 	}
 
