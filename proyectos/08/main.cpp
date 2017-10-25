@@ -61,6 +61,10 @@ int main(int argc, char* argv[])
                     {
                         codeWriter->writePushPop(commandType,arg1,arg2);
                     }
+                    else if(commandType == "C_FUNCTION")
+                    {
+                        codeWriter->writeFunction(arg1,arg2);
+                    }
                 }
             }
 

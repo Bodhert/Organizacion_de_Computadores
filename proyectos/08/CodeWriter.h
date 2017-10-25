@@ -13,6 +13,7 @@ public :
     void writeIf(string label);
     void writeLabel(string label);
     void writeGoto(string label);
+    void writeFunction(string functionName, int numLocals);
     void close();
     void write();
 };

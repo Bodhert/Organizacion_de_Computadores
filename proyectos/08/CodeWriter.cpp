@@ -307,3 +307,12 @@ void CodeWriter::writeGoto(string label)
     translate += _goto;
 }
 
+void CodeWriter::writeFunction(string functionName, int numLocals)
+{
+    translate += "(" + functionName + ")\n";
+    for(int i = 0; i < numLocals; ++i)
+    {
+        writePushPop("C_PUSH", "constant", 0);
+    }
+}
+

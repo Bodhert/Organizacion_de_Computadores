@@ -10,6 +10,7 @@ regex blankLines(R"((^\s*(\/\/.*)?(\r)*$))");
 regex labels(R"(((^\s*)label\s+[A-z])\w*(\s*(\/\/.*)?)(\r)*$)");
 regex if_goto(R"(((^\s*)if-goto\s+[A-z])\w*(\s*(\/\/.*)?)(\r)*$)");
 regex _goto(R"(((^\s*)goto\s+[A-z])\w*(\s*(\/\/.*)?)(\r)*$)");
+regex _function(R"(((^\s*)(function)\s+([A-z]+\w*(\.|\:)*)+\s+([1-9]\d*|0))(\s*(\/\/.*)?)(\r)*$)");
 string currentCommand;
 ifstream  file;
 map<string,string> c_types;
@@ -100,6 +101,10 @@ string Parser::commandType()
     {
         if(c_types.count("goto")) return c_types["goto"];
     }
+    else if(regex_match(currentCommand, _function))
+    {
+        if(c_types.count("function")) return c_types["function"];
+    }
     else if(regex_match(currentCommand,blankLines)) return "empty_line";
 
   return "Null";
@@ -172,6 +177,23 @@ string Parser::arg1()
         return temp;
     }
 
+    else if(regex_match(currentCommand, _function))
+    {
+        size_t found = currentCommand.find_first_of("function") + 8;
+        string temp;
+        int posLabel = -1;
+        for(size_t i = found; i < currentCommand.size()
+            && currentCommand[i] == ' '; ++i)
+                posLabel = i+1;
+
+        for(int i = posLabel; (isalnum(currentCommand[i]) ||
+            currentCommand[i] == '_' || currentCommand[i] == '.' ||
+            currentCommand[i] == ':') && i < currentCommand.size(); ++i)
+                temp += currentCommand[i];
+
+        return temp;
+    }
+
     return "not found arg1";
 }
 
@@ -181,6 +203,14 @@ int Parser::arg2()
     if(regex_match(currentCommand,words,memoryAccess))
     {
 
+        for (unsigned i=0; i<words.size(); ++i)
+        {
+            string temp = words[i];
+            if(isdigit(temp[0])) return atoi(temp.c_str());
+        }
+    }
+    else if(regex_match(currentCommand,words,_function))
+    {
         for (unsigned i=0; i<words.size(); ++i)
         {
             string temp = words[i];
