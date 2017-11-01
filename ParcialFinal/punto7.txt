@@ -1,0 +1,6 @@
+Stack: se usa para hacer las operaciones aritmeticas, además de controlar los 
+    contextos  privados de cada una de las funciones , y los punteros de las di-
+    recciones de retorno.
+Local: se usa para guardar las variables que declara la funcion o el metodo;
+args: guarda las variables las cuales, al ser llamadas a una funcion o metodo, son pasadas
+        como argumentos 

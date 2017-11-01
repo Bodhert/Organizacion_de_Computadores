@@ -1,0 +1,5 @@
+el circuito logico  y unos flip flops en cada punto de control  compuertas ands, con la siguiente condiciones
+la cerradura debe iniciar en cero , hago los correspondientes movimientos de izquierda a derecha
+y cada vez que paso por la combinacion y direccion deseada , prendo el flip flop de cada uno de estos
+una vez que termine los moviemientos, pregunto por todos los estados del flip flop , a los cuales les 
+hago and, y si todos quedaron prendidos , abro la caja fuerte

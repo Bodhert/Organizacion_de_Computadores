@@ -1,0 +1,12 @@
+//llama al constructor
+Stack
+    Direccion de retorno de la subrutina new()
+    LCL 
+        square
+        direction
+    ARG
+        no tiene
+    this
+        direccion de la instancia a retornar por el metodo invocado 
+    that
+        no tiene

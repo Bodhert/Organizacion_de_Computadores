@@ -1,0 +1,5 @@
+1. se debe de tener un Main.jack el cual cree una instancia llamando el construcctor
+     del objeto
+2. Se debe de tener Objeto.jack, siendo Objeto la clase a instanciar
+3. Objeto.jack debe de tener un construcctor , el cual retorne el "this",es decir
+    la direccion en memoria del objeto instanciado.
