@@ -1,0 +1,13 @@
+ventajas
+    1. Permite escribir codigos en lenguajes de alto nivel , y poder correrse en
+        diversas plataformas , con muy poca o sin ninguna modificacion del lenguaje
+    2. Agrega una capa de seguridad , es decir los compilade, no tienen que 
+        traducir directamente al lenguaje de la maquina, por lo que no se tienen
+        que conocer en detalle la implementacion de la misma.
+Desventajas
+    1. Agrega una capa de procesamiento, implicando que el flujo de instrucciones 
+        debe ser procesado al menos 2 veces antes de ejecutarse, implicando mas 
+        tiempo
+    2. Poca optimizacion , debido a la traduccion intermedia , generando operaciones
+        inecesarias.
+        

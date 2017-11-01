@@ -1,0 +1,12 @@
+Stack
+    Direccion de retorno de la subrutina main()
+    LCL 
+        game
+    ARG
+        no tiene
+    this
+        no tiene
+    that
+        no tiene
+
+
