@@ -193,11 +193,19 @@ public class Jack2XML
         public void enterStatements(JackParser.StatementsContext ctx) 
         {
             System.out.println("entro a enterStatements con: " + ctx.getText());
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "<statemets>\n");
+            globalTabs++;
         }
 
         public void exitStatements(JackParser.StatementsContext ctx) 
         {
             System.out.println("entro a exitStatements con: " + ctx.getText());
+            String tab = generateTab(globalTabs);
+            globalTabs--;
+            tab = generateTab(globalTabs);
+            buf.append(tab + "</statemets>\n");
+            
         }
 
         public void enterStatement(JackParser.StatementContext ctx) 
@@ -213,10 +221,20 @@ public class Jack2XML
         public void enterLetStatement(JackParser.LetStatementContext ctx) 
         {
             System.out.println("entro a enterLetStatement con: " + ctx.getText());
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "<letStatement>\n");
+            globalTabs++;
+            tab = generateTab(globalTabs);
+            buf.append(tab + "<keyword> " + "let"  +  " </keyword>\n");            
         }
 
         public void exitLetStatement(JackParser.LetStatementContext ctx) 
         {
+            String tab = generateTab(globalTabs);
+
+            globalTabs--;
+            tab = generateTab(globalTabs);
+            buf.append(tab + "<letStatement>\n");            
             System.out.println("entro a exitLetStatement con: " + ctx.getText());
         }
 
@@ -263,21 +281,32 @@ public class Jack2XML
         public void enterExpression(JackParser.ExpressionContext ctx) 
         {
             System.out.println("entro a enterExpression con: " + ctx.getText());
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "<expression>\n");
         }
 
         public void exitExpression(JackParser.ExpressionContext ctx) 
         {
+            String tab = generateTab(globalTabs);
+            // globalTabs--;
+            tab = generateTab(globalTabs);
             System.out.println("entro a exitExpression con: " + ctx.getText());
         }
 
         public void enterTerm(JackParser.TermContext ctx) 
         {
             System.out.println("entro a enterTerm con: " + ctx.getText());
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "<term>\n");
+            globalTabs++;
         }
 
         public void exitTerm(JackParser.TermContext ctx) 
         {
             System.out.println("entro a exitTerm con: " + ctx.getText());
+            globalTabs--;
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "</term>\n");
         }
 
         public void enterSubroutineCall(JackParser.SubroutineCallContext ctx) 
@@ -340,10 +369,17 @@ public class Jack2XML
         //     System.out.println("entro a exitEveryRule con: " + ctx.getText());
         // }
 
-        // public void visitTerminal(TerminalNode node) 
-        // {
-        //     System.out.println("entro a visitTerminal con: " + node.getText());
-        // }
+        public void visitTerminal(TerminalNode node) 
+        {
+            System.out.println("entro a visitTerminal con: " + node.getText());
+            String tab = generateTab(globalTabs);
+            if(node.getText().equals(",")) buf.append(tab + "<symbol> " + ',' + " </symbol>\n");
+            else if(node.getText().equals("=")) buf.append(tab + "<symbol> " + '=' + " </symbol>\n");
+            else if(node.getText().equals(".")) buf.append(tab + "<symbol> " + '.' + " </symbol>\n");
+           // else buf.append(tab + "<identifier> " + node.getText() + "</identifier>\n"); // arreglar todo de modo que me funcione con visit terminal
+            
+            
+        }
 
         public void visitErrorNode(ErrorNode node) 
         {
