@@ -15,200 +15,306 @@ import java.io.OutputStream;
 import java.util.Properties;
 import java.util.Stack;
 
-//main
+//mainf
 
 public class Jack2XML
 {
-    public static class XMLEmitterVisitor  extends JackBaseVisitor<Void> 
+
+    public static class XMLEmitter  extends JackBaseListener
     {
-        Stack<String> nested_stack = new Stack();
-        StringBuilder end_buf = new StringBuilder();
-
-        public Void print_to_end_buf()
-        {
-            Stack<String> temp = new Stack();
-            System.out.println(nested_stack);
-            while(!nested_stack.empty()) temp.push(nested_stack.pop());
-            while(!temp.empty()) end_buf.append(temp.pop() + "\n");  
-            return null;
-        }
+        StringBuilder buf = new StringBuilder();
+        StringBuilder buf_t = new StringBuilder();
         
+        int globalTabs = 0; 
+        // Generated from Jack.g4 by ANTLR 4.7
 
-
-         public Void visitClass_1(JackParser.Class_1Context ctx)
+        public String generateTab(int tabs)
         {
-              StringBuilder buf = new StringBuilder();
-              System.out.println(" visitando a: visitClass_1 ");
-
-              String open_class = "<" + ctx.getChild(0)+ ">";
-              nested_stack.push(open_class);
-              String keyword = "<keyword> " + ctx.getChild(0) + " </keyword>";
-              nested_stack.push(keyword);
-              //llamos a los hijos
-        
-                visitChildren(ctx);
-        
-              String closing_class = "</"+ ctx.getChild(0) +">";
-              nested_stack.push(closing_class);
-              buf.append("</symbol "+ ctx.getChild(2) +" symbol>\n");              
-              return null;
-              //return visitChildren(ctx); 
+            String tab = "";
+            for(int i = 0; i < tabs; ++i) tab += "  ";
+            return tab;
         }
 
-        public Void visitClassName(JackParser.ClassNameContext ctx) 
-        { 
-            System.out.println(" visitando a: visitClassName ");
-            String identifier = "<identifier> " + ctx.getText() + " </identifier>";
-            nested_stack.push(identifier);
-            return null; 
-            //return visitChildren(ctx); 
-        }
-
-        public Void visitClassVarDec(JackParser.ClassVarDecContext ctx)
-        { 
-            System.out.println(" visitando a: visitClassVarDec ");
-            return null;
-        //     return visitChildren(ctx); 
-        }
-
-        public Void visitType(JackParser.TypeContext ctx) 
+        public void enterClass_1(JackParser.Class_1Context ctx) 
         {
-            System.out.println("visitando a: " + "visitType" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a enterClass_1 con: " + ctx.getText());
+            buf.append("<" + ctx.getChild(0) + ">\n");
+            globalTabs++;
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "<keyword> " + ctx.getChild(0) + "</keyword>\n");
+            buf.append(tab + "<identifier> " + ctx.getChild(1).getText() + " </identifier>\n");
+            buf.append(tab + "<symbol> " + ctx.getChild(2).getText() + " </symbol>\n");
+            
         }
 
-        public Void visitSubroutineDec(JackParser.SubroutineDecContext ctx) 
+        public void exitClass_1(JackParser.Class_1Context ctx) 
         {
-            String Open_SubroutineDec = "<subroutineDec> ";
-            nested_stack.push(Open_SubroutineDec);
-            //llamos a sus hijos
-            System.out.println("visitando a: " + "visitSubroutineDec" ); 
-            visitChildren(ctx);
-            nested_stack.push(ctx.getChild(0).getText());
-            String Close_SubroutineDec = "</subroutineDec> ";
-            nested_stack.push(Close_SubroutineDec);
-            return null;
-             //return visitChildren(ctx); 
+            String tab = generateTab(globalTabs);
+            System.out.println(tab + "entro a exitClass_1 con: " + ctx.getText());
+            buf.append(tab + "<symbol> " + ctx.getChild(4) + " </symbol>\n");
+            globalTabs--;
+            tab = generateTab(globalTabs);
+            buf.append(tab + "</" + ctx.getChild(0) + ">\n");
         }
 
-        public Void visitParameterList(JackParser.ParameterListContext ctx) 
+        public void enterClassVarDec(JackParser.ClassVarDecContext ctx) 
         {
-            System.out.println("visitando a: " + "visitParameterList" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a enterClassVarDec con: " + ctx.getText());
         }
 
-        public Void visitSubroutineBody(JackParser.SubroutineBodyContext ctx) 
+        public void exitClassVarDec(JackParser.ClassVarDecContext ctx) 
         {
-            System.out.println("visitando a: " + "visitSubroutineBody" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a exitClassVarDec con: " + ctx.getText());
         }
 
-        public Void visitVarDec(JackParser.VarDecContext ctx) 
+        // public void enterType(JackParser.TypeContext ctx) 
+        // {
+        //     System.out.println("entro a enterType con: " + ctx.getText());
+        // }
+
+        // public void exitType(JackParser.TypeContext ctx) 
+        // {
+        //     System.out.println("entro a exitType con: " + ctx.getText());
+        // }
+
+        public void enterSubroutineDec(JackParser.SubroutineDecContext ctx) 
         {
-            System.out.println("visitando a: " + "visitVarDec" ); 
-             return visitChildren(ctx); 
+            String tab = generateTab(globalTabs);
+            System.out.println("entro a enterSubroutineDec con: " + ctx.getText());
+            buf.append(tab + "<subroutineDec>\n");
+            globalTabs++;
+            tab = generateTab(globalTabs);
+            buf.append(tab + "<keyword> " + ctx.getChild(0) + "</keyword>\n");            
         }
 
-        public Void visitSubroutineName(JackParser.SubroutineNameContext ctx) 
+        public void exitSubroutineDec(JackParser.SubroutineDecContext ctx) 
         {
-            System.out.println("visitando a: " + "visitSubroutineName" ); 
-             return visitChildren(ctx); 
+            globalTabs--;
+            buf.append("</subroutineDec>\n");
+            System.out.println("entro a exitSubroutineDec con: " + ctx.getText());
         }
 
-        public Void visitVarName(JackParser.VarNameContext ctx) 
+        public void enterParameterList(JackParser.ParameterListContext ctx) 
         {
-            System.out.println("visitando a: " + "visitVarName" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a enterParameterList con: " + ctx.getText());
         }
 
-        public Void visitStatements(JackParser.StatementsContext ctx) 
+        public void exitParameterList(JackParser.ParameterListContext ctx) 
         {
-            System.out.println("visitando a: " + "visitStatements" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a exitParameterList con: " + ctx.getText());
         }
 
-        public Void visitStatement(JackParser.StatementContext ctx) 
+        public void enterSubroutineBody(JackParser.SubroutineBodyContext ctx) 
         {
-            System.out.println("visitando a: " + "visitStatement" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a enterSubroutineBody con: " + ctx.getText());
         }
 
-        public Void visitLetStatement(JackParser.LetStatementContext ctx) 
+        public void exitSubroutineBody(JackParser.SubroutineBodyContext ctx) 
         {
-            System.out.println("visitando a: " + "visitLetStatement" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a exitSubroutineBody con: " + ctx.getText());
         }
 
-        public Void visitIfStatement(JackParser.IfStatementContext ctx) 
+        public void enterVarDec(JackParser.VarDecContext ctx) 
         {
-            System.out.println("visitando a: " + "visitIfStatement" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a enterVarDec con: " + ctx.getText());
         }
 
-        public Void visitWhileStatement(JackParser.WhileStatementContext ctx) 
+        public void exitVarDec(JackParser.VarDecContext ctx) 
         {
-            System.out.println("visitando a: " + "visitWhileStatement" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a exitVarDec con: " + ctx.getText());
         }
 
-        public Void visitDoStatement(JackParser.DoStatementContext ctx) 
+        // public void enterClassName(JackParser.ClassNameContext ctx) 
+        // {
+        //     System.out.println("entro a enterClassName con: " + ctx.getText());
+        // }
+
+        // public void exitClassName(JackParser.ClassNameContext ctx) 
+        // {
+        //     System.out.println("entro a exitClassName con: " + ctx.getText());
+        // }
+
+        // public void enterSubroutineName(JackParser.SubroutineNameContext ctx) 
+        // {
+        //     System.out.println("entro a enterSubroutineName con: " + ctx.getText());
+        // }
+
+        public void exitSubroutineName(JackParser.SubroutineNameContext ctx) 
         {
-            System.out.println("visitando a: " + "visitDoStatement" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a exitSubroutineName con: " + ctx.getText());
         }
 
-        public Void visitReturnStatement(JackParser.ReturnStatementContext ctx) 
+        // public void enterVarName(JackParser.VarNameContext ctx) 
+        // {
+        //     System.out.println("entro a enterVarName con: " + ctx.getText());
+        // }
+
+        public void exitVarName(JackParser.VarNameContext ctx) 
         {
-            System.out.println("visitando a: " + "visitReturnStatement" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a exitVarName con: " + ctx.getText());
         }
 
-        public Void visitExpression(JackParser.ExpressionContext ctx) 
+        public void enterStatements(JackParser.StatementsContext ctx) 
         {
-            System.out.println("visitando a: " + "visitExpression" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a enterStatements con: " + ctx.getText());
         }
 
-        public Void visitTerm(JackParser.TermContext ctx) 
+        public void exitStatements(JackParser.StatementsContext ctx) 
         {
-            System.out.println("visitando a: " + "visitTerm" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a exitStatements con: " + ctx.getText());
         }
 
-        public Void visitSubroutineCall(JackParser.SubroutineCallContext ctx) 
+        public void enterStatement(JackParser.StatementContext ctx) 
         {
-            System.out.println("visitando a: " + "visitSubroutineCall" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a enterStatement con: " + ctx.getText());
         }
 
-        public Void visitExpressionList(JackParser.ExpressionListContext ctx) 
+        public void exitStatement(JackParser.StatementContext ctx) 
         {
-            System.out.println("visitando a: " + "visitExpressionList" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a exitStatement con: " + ctx.getText());
         }
 
-        public Void visitOp(JackParser.OpContext ctx) 
+        public void enterLetStatement(JackParser.LetStatementContext ctx) 
         {
-            System.out.println("visitando a: " + "visitOp" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a enterLetStatement con: " + ctx.getText());
         }
 
-        public Void visitUnaryOp(JackParser.UnaryOpContext ctx) 
+        public void exitLetStatement(JackParser.LetStatementContext ctx) 
         {
-            System.out.println("visitando a: " + "visitUnaryOp" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a exitLetStatement con: " + ctx.getText());
         }
 
-        public Void visitKeywordConstant(JackParser.KeywordConstantContext ctx) 
+        public void enterIfStatement(JackParser.IfStatementContext ctx) 
         {
-            System.out.println("visitando a: " + "visitKeywordConstant" ); 
-             return visitChildren(ctx); 
+            System.out.println("entro a enterIfStatement con: " + ctx.getText());
         }
 
-    
-        
-        
-        
+        public void exitIfStatement(JackParser.IfStatementContext ctx) 
+        {
+            System.out.println("entro a exitIfStatement con: " + ctx.getText());
+        }
+
+        public void enterWhileStatement(JackParser.WhileStatementContext ctx) 
+        {
+            System.out.println("entro a enterWhileStatement con: " + ctx.getText());
+        }
+
+        public void exitWhileStatement(JackParser.WhileStatementContext ctx) 
+        {
+            System.out.println("entro a exitWhileStatement con: " + ctx.getText());
+        }
+
+        public void enterDoStatement(JackParser.DoStatementContext ctx) 
+        {
+            System.out.println("entro a enterDoStatement con: " + ctx.getText());
+        }
+
+        public void exitDoStatement(JackParser.DoStatementContext ctx) 
+        {
+            System.out.println("entro a exitDoStatement con: " + ctx.getText());
+        }
+
+        public void enterReturnStatement(JackParser.ReturnStatementContext ctx) 
+        {
+            System.out.println("entro a enterReturnStatement con: " + ctx.getText());
+        }
+
+        public void exitReturnStatement(JackParser.ReturnStatementContext ctx) 
+        {
+            System.out.println("entro a exitReturnStatement con: " + ctx.getText());
+        }
+
+        public void enterExpression(JackParser.ExpressionContext ctx) 
+        {
+            System.out.println("entro a enterExpression con: " + ctx.getText());
+        }
+
+        public void exitExpression(JackParser.ExpressionContext ctx) 
+        {
+            System.out.println("entro a exitExpression con: " + ctx.getText());
+        }
+
+        public void enterTerm(JackParser.TermContext ctx) 
+        {
+            System.out.println("entro a enterTerm con: " + ctx.getText());
+        }
+
+        public void exitTerm(JackParser.TermContext ctx) 
+        {
+            System.out.println("entro a exitTerm con: " + ctx.getText());
+        }
+
+        public void enterSubroutineCall(JackParser.SubroutineCallContext ctx) 
+        {
+            System.out.println("entro a enterSubroutineCall con: " + ctx.getText());
+        }
+
+        public void exitSubroutineCall(JackParser.SubroutineCallContext ctx) 
+        {
+            System.out.println("entro a exitSubroutineCall con: " + ctx.getText());
+        }
+
+        public void enterExpressionList(JackParser.ExpressionListContext ctx) 
+        {
+            System.out.println("entro a enterExpressionList con: " + ctx.getText());
+        }
+
+        public void exitExpressionList(JackParser.ExpressionListContext ctx) 
+        {
+            System.out.println("entro a exitExpressionList con: " + ctx.getText());
+        }
+
+        public void enterOp(JackParser.OpContext ctx) 
+        {
+            System.out.println("entro a enterOp con: " + ctx.getText());
+        }
+
+        public void exitOp(JackParser.OpContext ctx) 
+        {
+            System.out.println("entro a exitOp con: " + ctx.getText());
+        }
+
+        public void enterUnaryOp(JackParser.UnaryOpContext ctx) 
+        {
+            System.out.println("entro a enterUnaryOp con: " + ctx.getText());
+        }
+
+        public void exitUnaryOp(JackParser.UnaryOpContext ctx) 
+        {
+            System.out.println("entro a exitUnaryOp con: " + ctx.getText());
+        }
+
+        public void enterKeywordConstant(JackParser.KeywordConstantContext ctx) 
+        {
+            System.out.println("entro a enterKeywordConstant con: " + ctx.getText());
+        }
+
+        public void exitKeywordConstant(JackParser.KeywordConstantContext ctx) 
+        {
+            System.out.println("entro a exitKeywordConstant con: " + ctx.getText());
+        }
+
+        // public void enterEveryRule(ParserRuleContext ctx) 
+        // {
+        //     System.out.println("entro a enterEveryRule con: " + ctx.getText());
+        // }
+
+        // public void exitEveryRule(ParserRuleContext ctx) 
+        // {
+        //     System.out.println("entro a exitEveryRule con: " + ctx.getText());
+        // }
+
+        // public void visitTerminal(TerminalNode node) 
+        // {
+        //     System.out.println("entro a visitTerminal con: " + node.getText());
+        // }
+
+        public void visitErrorNode(ErrorNode node) 
+        {
+            System.out.println("entro a visitErrorNode con: " + node.getText());
+        }
+
+
     }
 
     public static void main(String[] args) throws Exception 
@@ -222,13 +328,12 @@ public class Jack2XML
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         JackParser parser = new JackParser(tokens);
         ParseTree tree = parser.class_1(); //regla inicial
-
-        XMLEmitterVisitor visitor = new XMLEmitterVisitor();
-        visitor.visit(tree);
+        ParseTreeWalker walker = new ParseTreeWalker();
+        XMLEmitter converter = new XMLEmitter();
+        walker.walk(converter, tree);
 
         PrintWriter writer = new PrintWriter("salida.xml", "UTF-8");
-        visitor.print_to_end_buf();
-        writer.println(visitor.end_buf.toString());
+        writer.println(converter.buf.toString());
         writer.close();
         Opener.close();
     }
