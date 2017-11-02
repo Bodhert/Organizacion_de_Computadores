@@ -41,9 +41,9 @@ public class Jack2XML
             buf.append("<" + "class" + ">\n");
             globalTabs++;
             String tab = generateTab(globalTabs);
-            buf.append(tab + "<keyword> " + "class" + " </keyword>\n");
-            buf.append(tab + "<identifier> " + ctx.getChild(1).getText() + " </identifier>\n");
-            buf.append(tab + "<symbol> " + "{" + " </symbol>\n");
+            // buf.append(tab + "<keyword> " + "class" + " </keyword>\n");
+            // buf.append(tab + "<identifier> " + ctx.getChild(1).getText() + " </identifier>\n");
+           // buf.append(tab + "<symbol> " + "{" + " </symbol>\n");
             
         }
 
@@ -51,7 +51,7 @@ public class Jack2XML
         {
             String tab = generateTab(globalTabs);
             System.out.println(tab + "entro a exitClass_1 con: " + ctx.getText());
-            buf.append(tab + "<symbol> " + "}" + " </symbol>\n");
+           // buf.append(tab + "<symbol> " + "}" + " </symbol>\n");
             globalTabs--;
             tab = generateTab(globalTabs);
             buf.append(tab + "</" + ctx.getChild(0) + ">\n");
@@ -84,9 +84,9 @@ public class Jack2XML
             buf.append(tab + "<subroutineDec>\n");
             globalTabs++;
             tab = generateTab(globalTabs);
-            buf.append(tab + "<keyword> " + ctx.getChild(0) + " </keyword>\n");
-            buf.append(tab + "<keyword> " + ctx.getChild(1) + " </keyword>\n");            
-            buf.append(tab + "<identifier> " + ctx.getChild(2).getText() + " </identifier>\n");                        
+            // buf.append(tab + "<keyword> " + ctx.getChild(0) + " </keyword>\n");
+            // buf.append(tab + "<keyword> " + ctx.getChild(1) + " </keyword>\n");            
+            //buf.append(tab + "<identifier> " + ctx.getChild(2).getText() + " </identifier>\n");                        
         }
 
         public void exitSubroutineDec(JackParser.SubroutineDecContext ctx) 
@@ -103,7 +103,7 @@ public class Jack2XML
         {
             System.out.println("entro a enterParameterList con: " + ctx.getText());
             String tab = generateTab(globalTabs);
-            buf.append(tab + "<symbol> " + "(" + " </symbol>\n");           
+           // buf.append(tab + "<symbol> " + "(" + " </symbol>\n");           
             buf.append(tab + "<parameterList>\n");
         }
 
@@ -112,7 +112,7 @@ public class Jack2XML
             System.out.println("entro a exitParameterList con: " + ctx.getText());
             String tab = generateTab(globalTabs);
             buf.append(tab + "</parameterList>\n");
-            buf.append(tab + "<symbol> " + ")" + " </symbol>\n");            
+           // buf.append(tab + "<symbol> " + ")" + " </symbol>\n");            
             
         }
 
@@ -123,14 +123,14 @@ public class Jack2XML
             buf.append(tab + "<subroutineBody>\n");
             globalTabs++;
             tab = generateTab(globalTabs);
-            buf.append(tab + "<symbol> " +  "{" + " </symbol>\n");
+            // buf.append(tab + "<symbol> " +  "{" + " </symbol>\n");
         }
 
         public void exitSubroutineBody(JackParser.SubroutineBodyContext ctx) 
         {
             System.out.println("entro a exitSubroutineBody con: " + ctx.getText());
             String tab = generateTab(globalTabs);
-            buf.append(tab + "<symbol> " +  "}" + " </symbol>\n");            
+            // buf.append(tab + "<symbol> " +  "}" + " </symbol>\n");            
             globalTabs--;
             tab = generateTab(globalTabs);
             buf.append(tab + "</subroutineBody>\n");
@@ -143,8 +143,8 @@ public class Jack2XML
             buf.append(tab + "<varDec>\n");
             globalTabs++;
             tab = generateTab(globalTabs);
-            buf.append(tab + "<keyword> " + "var" + " </keyword>\n" );
-            buf.append(tab + "<identifier> " + ctx.getChild(1).getText() + " </identifier>\n" );            
+            // buf.append(tab + "<keyword> " + "var" + " </keyword>\n" );
+            //buf.append(tab + "<identifier> " + ctx.getChild(1).getText() + " </identifier>\n" );            
             
         }
 
@@ -152,7 +152,7 @@ public class Jack2XML
         {
             System.out.println("entro a exitVarDec con: " + ctx.getText());
             String tab = generateTab(globalTabs);
-            buf.append(tab + "<symbol> " + ";" + " </symbol>\n");            
+            // buf.append(tab + "<symbol> " + ";" + " </symbol>\n");            
             globalTabs--;
             tab = generateTab(globalTabs);
             buf.append(tab + "</varDec>\n");
@@ -187,14 +187,14 @@ public class Jack2XML
         {
             System.out.println("entro a exitVarName con: " + ctx.getText());
             String tab = generateTab(globalTabs);
-            buf.append(tab + "<identifier> " + ctx.getText() + " </identifier>\n");
+            //buf.append(tab + "<identifier> " + ctx.getText() + " </identifier>\n");
         }
 
         public void enterStatements(JackParser.StatementsContext ctx) 
         {
             System.out.println("entro a enterStatements con: " + ctx.getText());
             String tab = generateTab(globalTabs);
-            buf.append(tab + "<statemets>\n");
+            buf.append(tab + "<statements>\n");
             globalTabs++;
         }
 
@@ -204,7 +204,7 @@ public class Jack2XML
             String tab = generateTab(globalTabs);
             globalTabs--;
             tab = generateTab(globalTabs);
-            buf.append(tab + "</statemets>\n");
+            buf.append(tab + "</statements>\n");
             
         }
 
@@ -224,58 +224,78 @@ public class Jack2XML
             String tab = generateTab(globalTabs);
             buf.append(tab + "<letStatement>\n");
             globalTabs++;
-            tab = generateTab(globalTabs);
-            buf.append(tab + "<keyword> " + "let"  +  " </keyword>\n");            
         }
 
         public void exitLetStatement(JackParser.LetStatementContext ctx) 
         {
-            String tab = generateTab(globalTabs);
-
             globalTabs--;
-            tab = generateTab(globalTabs);
-            buf.append(tab + "<letStatement>\n");            
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "</letStatement>\n");            
             System.out.println("entro a exitLetStatement con: " + ctx.getText());
         }
 
         public void enterIfStatement(JackParser.IfStatementContext ctx) 
         {
             System.out.println("entro a enterIfStatement con: " + ctx.getText());
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "<ifStatement>\n");
+            globalTabs++;
         }
 
         public void exitIfStatement(JackParser.IfStatementContext ctx) 
         {
             System.out.println("entro a exitIfStatement con: " + ctx.getText());
+            globalTabs--;
+            String tab = generateTab(globalTabs);            
+            buf.append(tab + "</ifStatement>\n");            
         }
 
         public void enterWhileStatement(JackParser.WhileStatementContext ctx) 
         {
             System.out.println("entro a enterWhileStatement con: " + ctx.getText());
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "<whileStatement>\n");
+            globalTabs++;
         }
 
         public void exitWhileStatement(JackParser.WhileStatementContext ctx) 
         {
             System.out.println("entro a exitWhileStatement con: " + ctx.getText());
+            globalTabs--;
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "</whileStatement>\n");   
         }
 
         public void enterDoStatement(JackParser.DoStatementContext ctx) 
         {
             System.out.println("entro a enterDoStatement con: " + ctx.getText());
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "<doStatement>\n");
+            globalTabs++;
         }
 
         public void exitDoStatement(JackParser.DoStatementContext ctx) 
         {
             System.out.println("entro a exitDoStatement con: " + ctx.getText());
+            globalTabs--;
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "</doStatement>\n");   
         }
 
         public void enterReturnStatement(JackParser.ReturnStatementContext ctx) 
         {
             System.out.println("entro a enterReturnStatement con: " + ctx.getText());
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "<returnStatement>\n");
+            globalTabs++;
         }
 
         public void exitReturnStatement(JackParser.ReturnStatementContext ctx) 
         {
             System.out.println("entro a exitReturnStatement con: " + ctx.getText());
+            globalTabs--;
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "</returnStatement>\n"); 
         }
 
         public void enterExpression(JackParser.ExpressionContext ctx) 
@@ -283,14 +303,16 @@ public class Jack2XML
             System.out.println("entro a enterExpression con: " + ctx.getText());
             String tab = generateTab(globalTabs);
             buf.append(tab + "<expression>\n");
+            globalTabs++;
         }
 
         public void exitExpression(JackParser.ExpressionContext ctx) 
         {
-            String tab = generateTab(globalTabs);
-            // globalTabs--;
-            tab = generateTab(globalTabs);
             System.out.println("entro a exitExpression con: " + ctx.getText());
+            String tab = generateTab(globalTabs);
+            globalTabs--;
+            tab = generateTab(globalTabs);
+            buf.append(tab + "</expression>\n");
         }
 
         public void enterTerm(JackParser.TermContext ctx) 
@@ -322,11 +344,17 @@ public class Jack2XML
         public void enterExpressionList(JackParser.ExpressionListContext ctx) 
         {
             System.out.println("entro a enterExpressionList con: " + ctx.getText());
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "<expressionList>\n");
+            globalTabs++;
         }
 
         public void exitExpressionList(JackParser.ExpressionListContext ctx) 
         {
             System.out.println("entro a exitExpressionList con: " + ctx.getText());
+            globalTabs--;
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "</expressionList>\n" );
         }
 
         public void enterOp(JackParser.OpContext ctx) 
@@ -373,10 +401,62 @@ public class Jack2XML
         {
             System.out.println("entro a visitTerminal con: " + node.getText());
             String tab = generateTab(globalTabs);
-            if(node.getText().equals(",")) buf.append(tab + "<symbol> " + ',' + " </symbol>\n");
-            else if(node.getText().equals("=")) buf.append(tab + "<symbol> " + '=' + " </symbol>\n");
-            else if(node.getText().equals(".")) buf.append(tab + "<symbol> " + '.' + " </symbol>\n");
-           // else buf.append(tab + "<identifier> " + node.getText() + "</identifier>\n"); // arreglar todo de modo que me funcione con visit terminal
+            String terminal = node.getText();
+            if(
+                   terminal.equals(",") 
+                || terminal.equals("=") 
+                || terminal.equals(".")
+                || terminal.equals("{") 
+                || terminal.equals("}") 
+                || terminal.equals("(")
+                || terminal.equals(")")
+                || terminal.equals(";")
+                || terminal.equals("<")
+                || terminal.equals(">")
+                || terminal.equals("[")
+                || terminal.equals("]")
+                || terminal.equals("/")
+                || terminal.equals("+")
+                || terminal.equals("-")                
+              )
+            {
+                buf.append(tab + "<symbol> " + terminal + " </symbol>\n");
+            } 
+            else if(!(
+                           terminal.equals("class") 
+                        || terminal.equals("constructor") 
+                        || terminal.equals("function")
+                        || terminal.equals("method") 
+                        || terminal.equals("field") 
+                        || terminal.equals("static") 
+                        || terminal.equals("var") 
+                        || terminal.equals("int") 
+                        || terminal.equals("char") 
+                        || terminal.equals("boolean") 
+                        || terminal.equals("void") 
+                        || terminal.equals("true")
+                        || terminal.equals("false") 
+                        || terminal.equals("null") 
+                        || terminal.equals("this") 
+                        || terminal.equals("let")
+                        || terminal.equals("do") 
+                        || terminal.equals("else")
+                        || terminal.equals("while") 
+                        || terminal.equals("return")
+                        || terminal.equals(";")
+                        || terminal.equals(",")
+                      )
+                    )
+            {
+                buf.append(tab + "<identifier> " + terminal + " </identifier>\n");
+            }
+
+            else
+            {
+                buf.append(tab + "<keyword> " + terminal + " </keyword>\n");
+            }
+            
+            // arreglar todo de modo que me funcione con visit terminal
             
             
         }
