@@ -57,11 +57,17 @@ public class Jack2XML
         public void enterClassVarDec(JackParser.ClassVarDecContext ctx) 
         {
             System.out.println("entro a enterClassVarDec con: " + ctx.getText());
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "<classVarDec>\n");
+            globalTabs++;
         }
 
         public void exitClassVarDec(JackParser.ClassVarDecContext ctx) 
         {
             System.out.println("entro a exitClassVarDec con: " + ctx.getText());
+            globalTabs--;
+            String tab = generateTab(globalTabs);
+            buf.append(tab + "</classVarDec>\n");
         }
 
         // public void enterType(JackParser.TypeContext ctx) 
@@ -102,13 +108,16 @@ public class Jack2XML
             String tab = generateTab(globalTabs);
            // buf.append(tab + "<symbol> " + "(" + " </symbol>\n");           
             buf.append(tab + "<parameterList>\n");
+            globalTabs++;
         }
 
         public void exitParameterList(JackParser.ParameterListContext ctx) 
         {
             System.out.println("entro a exitParameterList con: " + ctx.getText());
+            globalTabs--;
             String tab = generateTab(globalTabs);
             buf.append(tab + "</parameterList>\n");
+
            // buf.append(tab + "<symbol> " + ")" + " </symbol>\n");            
             
         }
@@ -420,13 +429,21 @@ public class Jack2XML
                 || terminal.equals("]")
                 || terminal.equals("/")
                 || terminal.equals("+")
-                || terminal.equals("-")                
+                || terminal.equals("-")
+                || terminal.equals("|")    
+                || terminal.equals("&")
+                || terminal.equals("\"")
+                || terminal.equals("*")
+                || terminal.equals("~")                
               )
             {
                 if(terminal.equals("<")) terminal = "&lt;";
                 else if(terminal.equals(">")) terminal = "&gt;";
+                else if(terminal.equals("&")) terminal = "&amp;";
+                else if(terminal.equals("\"")) terminal = "&quot;";
+
                 buf.append(tab + "<symbol> " + terminal + " </symbol>\n");
-                buf_t.append("  " + "<symbol> " + terminal + " </symbol>\n");
+                buf_t.append("<symbol> " + terminal + " </symbol>\n");
             } 
             else if(!(
                            terminal.equals("class") 
@@ -446,6 +463,7 @@ public class Jack2XML
                         || terminal.equals("this") 
                         || terminal.equals("let")
                         || terminal.equals("do") 
+                        || terminal.equals("if") 
                         || terminal.equals("else")
                         || terminal.equals("while") 
                         || terminal.equals("return")
@@ -457,7 +475,7 @@ public class Jack2XML
                     )
             {
                 buf.append(tab + "<identifier> " + terminal + " </identifier>\n");
-                buf_t.append("  " + "<identifier> " + terminal + " </identifier>\n");
+                buf_t.append("<identifier> " + terminal + " </identifier>\n");
             }
             else if(isString)
             {
@@ -466,17 +484,17 @@ public class Jack2XML
                 terminal = terminal.substring(posFirstQuote,posSecondQuote);
                 //System.out.println(terminal +  "asdfasdfsadfasdaa--------------------");
                 buf.append(tab + "<stringConstant> " + terminal + " </stringConstant>\n");
-                buf_t.append("  " + "<stringConstant> " + terminal + " </stringConstant>\n");
+                buf_t.append("<stringConstant> " + terminal + " </stringConstant>\n");
             }
             else if(isInt)
             {
                 buf.append(tab + "<integerConstant> " + terminal + " </integerConstant>\n");
-                buf_t.append("  " + "<integerConstant> " + terminal + " </integerConstant>\n");
+                buf_t.append("<integerConstant> " + terminal + " </integerConstant>\n");
             }
             else
             {
                 buf.append(tab + "<keyword> " + terminal + " </keyword>\n");
-                buf_t.append("  " + "<keyword> " + terminal + " </keyword>\n");
+                buf_t.append("<keyword> " + terminal + " </keyword>\n");
             }
         }
 
@@ -512,7 +530,7 @@ public class Jack2XML
             writer.print(converter.buf.toString());
             writer.close();
             PrintWriter writer_T = new PrintWriter(outFile + "1T.xml","UTF-8");
-            writer_T.print(converter.buf_t.toString());
+            writer_T.println(converter.buf_t.toString());
             writer_T.close();
             Opener.close();
         }
