@@ -396,12 +396,17 @@ public class Jack2XML
         // {
         //     System.out.println("entro a exitEveryRule con: " + ctx.getText());
         // }
-
+        
+        public boolean isInteger(String s) {  
+            return s != null && s.matches("[-+]?\\d*");  
+        }  
         public void visitTerminal(TerminalNode node) 
         {
             System.out.println("entro a visitTerminal con: " + node.getText());
             String tab = generateTab(globalTabs);
             String terminal = node.getText();
+            Boolean isString =  terminal.startsWith("\"") && terminal.endsWith("\"");
+            Boolean isInt = isInteger(terminal);
             if(
                    terminal.equals(",") 
                 || terminal.equals("=") 
@@ -420,6 +425,8 @@ public class Jack2XML
                 || terminal.equals("-")                
               )
             {
+                if(terminal.equals("<")) terminal = "&lt;";
+                else if(terminal.equals(">")) terminal = "&gt;";
                 buf.append(tab + "<symbol> " + terminal + " </symbol>\n");
             } 
             else if(!(
@@ -445,20 +452,29 @@ public class Jack2XML
                         || terminal.equals("return")
                         || terminal.equals(";")
                         || terminal.equals(",")
+                        || isString
+                        || isInt
                       )
                     )
             {
                 buf.append(tab + "<identifier> " + terminal + " </identifier>\n");
             }
-
+            else if(isString)
+            {
+                int posFirstQuote = terminal.indexOf("\"") + 1;
+                int posSecondQuote = terminal.lastIndexOf("\"");      
+                terminal = terminal.substring(posFirstQuote,posSecondQuote);
+                //System.out.println(terminal +  "asdfasdfsadfasdaa--------------------");
+                buf.append(tab + "<stringConstant> " + terminal + " </stringConstant>\n");
+            }
+            else if(isInt)
+            {
+                buf.append(tab + "<integerConstant> " + terminal + " </integerConstant>\n");
+            }
             else
             {
                 buf.append(tab + "<keyword> " + terminal + " </keyword>\n");
             }
-            
-            // arreglar todo de modo que me funcione con visit terminal
-            
-            
         }
 
         public void visitErrorNode(ErrorNode node) 
@@ -485,7 +501,7 @@ public class Jack2XML
         walker.walk(converter, tree);
 
         PrintWriter writer = new PrintWriter("salida.xml", "UTF-8");
-        writer.println(converter.buf.toString());
+        writer.print(converter.buf.toString());
         writer.close();
         Opener.close();
     }
