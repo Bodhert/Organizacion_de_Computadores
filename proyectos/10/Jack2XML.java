@@ -3,17 +3,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
-import javax.xml.transform.*;
-import javax.xml.transform.stream.*;
 import java.io.StringWriter;
 import java.io.StringReader;
 import java.io.PrintWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Properties;
-import java.util.Stack;
 
 //mainf
 
@@ -39,6 +34,7 @@ public class Jack2XML
         {
             System.out.println("entro a enterClass_1 con: " + ctx.getText());
             buf.append("<" + "class" + ">\n");
+            buf_t.append("<tokens>\n");
             globalTabs++;
             String tab = generateTab(globalTabs);
             // buf.append(tab + "<keyword> " + "class" + " </keyword>\n");
@@ -54,7 +50,8 @@ public class Jack2XML
            // buf.append(tab + "<symbol> " + "}" + " </symbol>\n");
             globalTabs--;
             tab = generateTab(globalTabs);
-            buf.append(tab + "</" + ctx.getChild(0) + ">\n");
+            buf.append(tab + "</" + "class" + ">\n");
+            buf_t.append("</tokens>");
         }
 
         public void enterClassVarDec(JackParser.ClassVarDecContext ctx) 
@@ -400,6 +397,7 @@ public class Jack2XML
         public boolean isInteger(String s) {  
             return s != null && s.matches("[-+]?\\d*");  
         }  
+
         public void visitTerminal(TerminalNode node) 
         {
             System.out.println("entro a visitTerminal con: " + node.getText());
@@ -428,6 +426,7 @@ public class Jack2XML
                 if(terminal.equals("<")) terminal = "&lt;";
                 else if(terminal.equals(">")) terminal = "&gt;";
                 buf.append(tab + "<symbol> " + terminal + " </symbol>\n");
+                buf_t.append("  " + "<symbol> " + terminal + " </symbol>\n");
             } 
             else if(!(
                            terminal.equals("class") 
@@ -458,6 +457,7 @@ public class Jack2XML
                     )
             {
                 buf.append(tab + "<identifier> " + terminal + " </identifier>\n");
+                buf_t.append("  " + "<identifier> " + terminal + " </identifier>\n");
             }
             else if(isString)
             {
@@ -466,14 +466,17 @@ public class Jack2XML
                 terminal = terminal.substring(posFirstQuote,posSecondQuote);
                 //System.out.println(terminal +  "asdfasdfsadfasdaa--------------------");
                 buf.append(tab + "<stringConstant> " + terminal + " </stringConstant>\n");
+                buf_t.append("  " + "<stringConstant> " + terminal + " </stringConstant>\n");
             }
             else if(isInt)
             {
                 buf.append(tab + "<integerConstant> " + terminal + " </integerConstant>\n");
+                buf_t.append("  " + "<integerConstant> " + terminal + " </integerConstant>\n");
             }
             else
             {
                 buf.append(tab + "<keyword> " + terminal + " </keyword>\n");
+                buf_t.append("  " + "<keyword> " + terminal + " </keyword>\n");
             }
         }
 
@@ -487,22 +490,32 @@ public class Jack2XML
 
     public static void main(String[] args) throws Exception 
     {
-        String fileName = "Main.jack"; // cambiar despues por lectura de argumentos (leer archivo )
-        File file = new File(fileName);
-        FileInputStream Opener = null;
-        Opener = new FileInputStream(file);
-        ANTLRInputStream input = new ANTLRInputStream(Opener);
-        JackLexer lexer = new JackLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        JackParser parser = new JackParser(tokens);
-        ParseTree tree = parser.class_1(); //regla inicial
-        ParseTreeWalker walker = new ParseTreeWalker();
-        XMLEmitter converter = new XMLEmitter();
-        walker.walk(converter, tree);
+        String fileName;
+        if(args != null)
+        {
+            fileName = args[0]; // cambiar despues por lectura de argumentos (leer archivo )
+            String outFile = fileName.substring(0,fileName.lastIndexOf("."));
+            File file = new File(fileName);
+            FileInputStream Opener = null;
+            Opener = new FileInputStream(file);
+            ANTLRInputStream input = new ANTLRInputStream(Opener);
+            JackLexer lexer = new JackLexer(input);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            JackParser parser = new JackParser(tokens);
 
-        PrintWriter writer = new PrintWriter("salida.xml", "UTF-8");
-        writer.print(converter.buf.toString());
-        writer.close();
-        Opener.close();
+            ParseTree tree = parser.class_1(); //regla inicial
+            ParseTreeWalker walker = new ParseTreeWalker();
+            XMLEmitter converter = new XMLEmitter();
+            walker.walk(converter, tree);
+    
+            PrintWriter writer = new PrintWriter(outFile + "1.xml","UTF-8");
+            writer.print(converter.buf.toString());
+            writer.close();
+            PrintWriter writer_T = new PrintWriter(outFile + "1T.xml","UTF-8");
+            writer_T.print(converter.buf_t.toString());
+            writer_T.close();
+            Opener.close();
+        }
+        
     }
 }
