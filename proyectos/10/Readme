@@ -1,0 +1,15 @@
+--- You must have anltr4 installed in your local machine
+
+1) compile the .g4 file with anltr4, you have to run it , dependig of how the 
+    path is in your local machine, in my case i have an alias named antlr4, 
+    alias antlr4='java -jar /usr/local/lib/antlr-4.7-complete.jar', that is where
+    i have anltr4 installed, for more information see http://www.antlr.org/
+
+    $anltr4 Jack.g4
+
+2) complie everething that have Jack for poxfix, like this
+    $javac Jack*.java
+
+3)  run the program and pass the .jack file that you want to convert to .xml
+    $java Jack2XML [yourFile.jack]
+    
