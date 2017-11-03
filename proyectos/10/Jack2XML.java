@@ -526,10 +526,10 @@ public class Jack2XML
             XMLEmitter converter = new XMLEmitter();
             walker.walk(converter, tree);
     
-            PrintWriter writer = new PrintWriter(outFile + "1.xml","UTF-8");
+            PrintWriter writer = new PrintWriter(outFile + ".xml","UTF-8");
             writer.print(converter.buf.toString());
             writer.close();
-            PrintWriter writer_T = new PrintWriter(outFile + "1T.xml","UTF-8");
+            PrintWriter writer_T = new PrintWriter(outFile + "T.xml","UTF-8");
             writer_T.println(converter.buf_t.toString());
             writer_T.close();
             Opener.close();
